@@ -1,2 +1,11 @@
 ### Get /
 GET http://localhost:3000/
+
+### Post /auth/register
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+    "email": "maxime.bourret@hey.com",
+    "password": "12345678"
+}
