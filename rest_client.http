@@ -7,7 +7,7 @@ POST http://localhost:3000/api/auth/sign-up/email
 Content-Type: application/json
 
 {
-    "name": "Max",
+  "name": "Max",
   "email": "max@example.com",
   "password": "password"
 }
@@ -27,3 +27,16 @@ Origin: http://localhost:3000
 POST http://localhost:3000/api/auth/sign-out
 Content-Type: application/json
 Origin: http://localhost:3000
+
+
+### Post /chats
+POST http://localhost:3000/chats
+Content-Type: application/json
+Origin: http://localhost:3000
+
+{
+  "title": "Test"
+}
+
+### Get /chats
+GET http://localhost:3000/chats
