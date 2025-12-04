@@ -4,6 +4,7 @@ import { auth } from "./lib/auth";
 import { toNodeHandler } from "better-auth/node";
 import { authMiddleware } from "./middlewares/auth";
 import chatRouter from "./routes/chats";
+import messagesRouter from "./routes/messages";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -19,7 +20,7 @@ app.use(express.json());
 
 
 app.use("/chats", chatRouter);
-
+app.use("/messages", messagesRouter);
 
 
 app.get("/protected", authMiddleware, async (req, res) => {

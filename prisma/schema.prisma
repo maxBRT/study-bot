@@ -89,11 +89,11 @@ model Chat {
 }
 
 model Message {
-  id         String @id @default(cuid())
-  sender     String
-  model_name String
-  chatId     String
-  chat       Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  id        String @id @default(cuid())
+  sender    String
+  modelName String
+  chatId    String
+  chat      Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
 
   content   String
   createdAt DateTime @default(now())

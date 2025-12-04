@@ -45,4 +45,15 @@ GET http://localhost:3000/chats
 GET http://localhost:3000/chats/cmiqq9rxh0000nosbbmelebvj
 
 ### Delete /chats/:id
-DELETE http://localhost:3000/chats/cmiqq9rxh0000nosbbmelebvj
+DELETE http://localhost:3000/chats/cmis2v9o30000ccsbrkxr4x35
+
+
+### Post /messages
+POST http://localhost:3000/messages
+Content-Type: application/json
+
+{
+  "input": "Hello, how are you?",
+  "chatId": "cmis2v9o30000ccsbrkxr4x35",
+  "model_name": "gpt-4.1-nano"
+}
