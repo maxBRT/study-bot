@@ -1,8 +1,67 @@
 import prisma from "../lib/prisma";
-import type { Response, Request } from "express";
+import type { Response } from "express";
+import type { AuthenticatedRequest } from "../types/express";
 
+export const deleteChat = async (req: AuthenticatedRequest, res: Response) => {
+    try {
+        const { id } = req.params;
+        if (!id) return res.status(400).json({ success: false, message: "ID is required" })
+        const chat = await prisma.chat.findUnique({
+            where: {
+                id: id as string,
+            },
+        });
+        if (!chat) return res.status(404).json({ success: false, message: "Chat not found" });
+        await prisma.chat.delete({
+            where: {
+                id: id as string,
+            },
+        });
+        return res.status(200).json({
+            success: true,
+            message: "Chat deleted successfully",
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            error,
+        });
+    }
+}
 
-export const getChatsForUser = async (req: Request, res: Response) => {
+export const getChat = async (req: AuthenticatedRequest, res: Response) => {
+    try {
+        const { id } = req.params;
+        if (!id) return res.status(400).json({ success: false, message: "ID is required" })
+        const chat = await prisma.chat.findUnique({
+            where: {
+                id: id as string,
+            },
+            include: {
+                messages: true,
+            }
+        })
+        if (!chat) return res.status(404).json({ success: false, message: "Chat not found" });
+
+        res.status(200).json({
+            success: true,
+            message: "Chat found",
+            data: { chat }
+        })
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            error,
+        });
+    }
+}
+
+export const getChatsForUser = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const user = req.user;
         const chats = await prisma.chat.findMany({
@@ -30,7 +89,7 @@ export const getChatsForUser = async (req: Request, res: Response) => {
 
 
 
-export const createChat = async (req: Request, res: Response) => {
+export const createChat = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const { title } = req.body;
         const user = req.user;

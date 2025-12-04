@@ -40,3 +40,9 @@ Origin: http://localhost:3000
 
 ### Get /chats
 GET http://localhost:3000/chats
+
+### Get /chats/:id
+GET http://localhost:3000/chats/cmiqq9rxh0000nosbbmelebvj
+
+### Delete /chats/:id
+DELETE http://localhost:3000/chats/cmiqq9rxh0000nosbbmelebvj

@@ -1,5 +1,7 @@
 import type { Session, User } from "better-auth";
+import type { Request } from "express";
 
+// Ajoute les champs user et session sur les Requests
 declare global {
     namespace Express {
         interface Request {
@@ -7,4 +9,10 @@ declare global {
             session?: Session;
         }
     }
+}
+
+// Interface pour type safety dans les routes authentifier
+export interface AuthenticatedRequest extends Request {
+    user: User;
+    session: Session;
 }
