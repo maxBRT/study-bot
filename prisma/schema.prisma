@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -18,6 +17,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  chats         Chat[]
 
   @@unique([email])
   @@map("user")
@@ -39,6 +39,8 @@ model Session {
   @@map("session")
 }
 
+// Générer par Better Auth pour les connections avec provider social (Google, GitHub, ect).
+// Pas utiliser par mon application pour l'instant mais Better Auth en dépend.
 model Account {
   id                    String    @id
   accountId             String
@@ -59,14 +61,44 @@ model Account {
   @@map("account")
 }
 
+// Table utiliser pour la gestion des emails (verification, password reset, etc.)
 model Verification {
   id         String   @id
-  identifier String
-  value      String
+  identifier String // le email ou le token est envoyer
+  value      String // le token ou le code est envoyer
   expiresAt  DateTime
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Chat {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages Message[]
+
+  @@index([userId])
+  @@map("chat")
+}
+
+model Message {
+  id         String @id @default(cuid())
+  sender     String
+  model_name String
+  chatId     String
+  chat       Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([chatId])
+  @@map("message")
 }

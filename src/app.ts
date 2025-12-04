@@ -3,15 +3,24 @@ import dotenv from "dotenv";
 import { auth } from "./lib/auth";
 import { toNodeHandler } from "better-auth/node";
 import { authMiddleware } from "./middlewares/auth";
+import chatRouter from "./routes/chats";
 
 // Load environment variables from .env file
 dotenv.config();
 
 // Create an Express app
 const app = express();
-// Add middlewares
+
+// Set up Better Auth
 app.all('/api/auth/{*any}', toNodeHandler(auth));
+
+// Add middlewares
 app.use(express.json());
+
+
+app.use("/chats", chatRouter);
+
+
 
 app.get("/protected", authMiddleware, async (req, res) => {
     const user = req.user;
