@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import { auth } from "./lib/auth";
 import { toNodeHandler } from "better-auth/node";
+import { authMiddleware } from "./middlewares/auth";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -12,8 +13,14 @@ const app = express();
 app.all('/api/auth/{*any}', toNodeHandler(auth));
 app.use(express.json());
 
-app.get("/", (_req, res) => {
-    res.json({ message: "API is running" });
+app.get("/protected", authMiddleware, async (req, res) => {
+    const user = req.user;
+    const session = req.session;
+    res.json({
+        message: "API is running",
+        user,
+        session,
+    });
 });
 
 // Start the server

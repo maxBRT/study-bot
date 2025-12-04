@@ -1,11 +1,29 @@
-### Get /
-GET http://localhost:3000/
+### Get /protected
+GET http://localhost:3000/protected
 
-### Post /auth/register
-POST http://localhost:3000/auth/register
+
+### Get /api/auth/sign-up/email
+POST http://localhost:3000/api/auth/sign-up/email
 Content-Type: application/json
 
 {
-    "email": "maxime.bourret@hey.com",
-    "password": "12345678"
+    "name": "Max",
+  "email": "max@example.com",
+  "password": "password"
 }
+
+
+### Get /api/auth/sign-in/email
+POST http://localhost:3000/api/auth/sign-in/email
+Content-Type: application/json
+Origin: http://localhost:3000
+
+{
+  "email": "max@example.com",
+  "password": "password"
+}
+
+### Get /api/auth/sign-out
+POST http://localhost:3000/api/auth/sign-out
+Content-Type: application/json
+Origin: http://localhost:3000
