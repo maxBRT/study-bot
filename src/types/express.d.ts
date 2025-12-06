@@ -1,4 +1,5 @@
-import type { Session, User } from "better-auth";
+import type { Session } from "better-auth";
+import type { User } from "@prisma/client";
 import type { Request } from "express";
 
 // Ajoute les champs user et session sur les Requests

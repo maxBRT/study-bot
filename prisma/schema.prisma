@@ -13,7 +13,7 @@ model User {
   email          String
   emailVerified  Boolean      @default(false)
   image          String?
-  tokens         BigInt       @default(10000)
+  tokens         BigInt       @default(1000)
   tokenRefreshAt DateTime     @default(now())
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt

@@ -14,7 +14,7 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
     if (!input || !chatId || !modelName) {
         return res.status(400).json({ message: 'Missing input' });
     }
-    const tokens = countStringTokens(input, modelName);
+    const inputTokens = countStringTokens(input, modelName);
     await prisma.message.create({
         data: {
             content: input,
@@ -24,7 +24,7 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
             tokenUsages: {
                 create: {
                     userId: user.id,
-                    tokenOut: tokens,
+                    tokenOut: inputTokens,
                 }
             }
         }
@@ -65,6 +65,15 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
                     tokenOut: outputTokens,
                 }
             }
+        }
+    });
+
+    await prisma.user.update({
+        where: {
+            id: user.id,
+        },
+        data: {
+            tokens: user.tokens - BigInt(inputTokens + outputTokens) < 0n ? 0n : user.tokens - BigInt(inputTokens + outputTokens),
         }
     });
 

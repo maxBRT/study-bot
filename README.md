@@ -5,7 +5,7 @@
 - [x] Add token field to user table
 - [x] Add token_refresh field to user table
 - [x] Add a token_usage table
-- [ ] Monitor token usage in sendMessage function
+- [x] Monitor token usage in sendMessage function
 - [ ] Create a tokenUsage middleware
 
 ## SQL schema

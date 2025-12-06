@@ -5,6 +5,7 @@ GET http://localhost:3000/protected
 ### Get /api/auth/sign-up/email
 POST http://localhost:3000/api/auth/sign-up/email
 Content-Type: application/json
+Origin: http://localhost:3000
 
 {
   "name": "Max",
@@ -53,7 +54,7 @@ POST http://localhost:3000/messages
 Content-Type: application/json
 
 {
-  "input": "Tell me, what is the best programming language?",
-  "chatId": "cmiuenr090000mdsbsstgien8",
+  "input": "Tell me, why does typescript feel like its not really compiled (like java or go)?",
+  "chatId": "cmiufsq2g000070sb06jyghdz",
   "modelName": "gpt-4.1-nano"
 }
