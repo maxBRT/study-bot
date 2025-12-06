@@ -15,6 +15,7 @@ describe("Token middleware", () => {
         await prisma.verification.deleteMany();
         await prisma.user.deleteMany();
     });
+
     describe("tokenUsageMiddleware", () => {
         it("should call next() when user has enough tokens", async () => {
             const { user, sessionToken } = await createTestUser();

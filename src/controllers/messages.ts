@@ -5,6 +5,10 @@ import type { Response } from 'express';
 import dotenv from 'dotenv';
 import prisma from '../lib/prisma';
 import type { User } from '../generated/prisma/client';
+import fs from 'fs';
+import path from 'path';
+import { get } from 'http';
+
 
 dotenv.config();
 
@@ -28,7 +32,7 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
         await prisma.message.create({
             data: {
                 content: input,
-                sender: user.name,
+                sender: "user",
                 modelName: modelName,
                 chatId: chatId,
                 tokenUsages: {
@@ -40,13 +44,38 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
             }
         });
 
+        const messages = await prisma.message.findMany({
+            where: {
+                chatId: chatId,
+            },
+            select: {
+                content: true,
+                sender: true,
+            },
+            orderBy: {
+                createdAt: 'asc',
+            },
+            take: 10,
+        });
+
+
+        const systemPrompt: OpenAI.Chat.ChatCompletionMessageParam = {
+            role: "system",
+            content: getSystemPrompt(),
+        };
+
+        const formattedMessages = messages.map(m => ({
+            role: m.sender === "agent" ? "assistant" : "user",
+            content: m.content
+        })) as OpenAI.Chat.ChatCompletionMessageParam[];
+
         // Send the message to OpenAI
-        const stream = await client.responses.create({
+        const stream = await client.chat.completions.create({
             model: modelName,
-            instructions: 'You are a coding assistant that talks like an old wizard',
-            input: input,
-            max_output_tokens: 1000,
+            messages: [systemPrompt, ...formattedMessages],
+            max_tokens: 1000,
             stream: true,
+            temperature: 0.5,
         });
 
         let content = '';
@@ -55,10 +84,10 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
         res.setHeader('Content-Type', 'text/event-stream');
         res.setHeader('Cache-Control', 'no-cache');
         res.setHeader('Connection', 'keep-alive');
-        for await (const event of stream) {
-            if (event.type === 'response.output_text.delta') {
-                const text = event.delta;
-                content += text.toString();
+        for await (const chunk of stream) {
+            const text = chunk.choices[0]?.delta?.content || '';
+            if (text) {
+                content += text;
                 res.write(text);
             }
         }
@@ -138,4 +167,10 @@ async function chargeTokens(user: User, total: bigint) {
             tokens: user.tokens - total < 0n ? 0n : user.tokens - total,
         }
     });
+}
+
+function getSystemPrompt() {
+    const systemPromptPath = path.join(process.cwd(), 'prompts', 'system.md');
+    const systemPrompt = fs.readFileSync(systemPromptPath, 'utf8');
+    return systemPrompt;
 }

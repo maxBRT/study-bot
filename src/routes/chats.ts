@@ -5,8 +5,8 @@ import { createChat, getChatsForUser, getChat, deleteChat } from "../controllers
 
 const router = Router();
 
-// Cast nécessaire : le middleware garantit que la requête contient `user` et `session`,
-// mais TypeScript ne peut pas inférer cette transformation de Request → AuthenticatedRequest.
+// Necessary cast: the middleware guarantees that the request contains `user` and `session`,
+// but TypeScript cannot infer this transformation from Request → AuthenticatedRequest.
 router.get("/", authMiddleware, getChatsForUser as RequestHandler);
 router.get("/:id", authMiddleware, getChat as RequestHandler);
 router.post("/", authMiddleware, createChat as RequestHandler);
