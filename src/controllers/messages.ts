@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import { encoding_for_model, type TiktokenModel } from "tiktoken";
 import type { AuthenticatedRequest } from '../types/express';
 import type { Response } from 'express';
 import dotenv from 'dotenv';
@@ -6,37 +7,34 @@ import prisma from '../lib/prisma';
 
 dotenv.config();
 
-export const postMessage = async (req: AuthenticatedRequest, res: Response) => {
+export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
     const client = createOpenAIClient();
     const user = req.user;
-    const { input, chatId, model_name } = req.body;
-    if (!input || !chatId || !model_name) {
+    const { input, chatId, modelName } = req.body;
+    if (!input || !chatId || !modelName) {
         return res.status(400).json({ message: 'Missing input' });
     }
-    // Fetch the user and check if they have at least 1000 tokens 
-
-    // const user = await prisma.user.findUnique({
-    //     where: {
-    //         id: userId,
-    //     },
-    // });
-    // if (user.token < 1000) {
-    //     return res.status(401).json({ message: 'Not enough tokens' });
-    // }
-
+    const tokens = countStringTokens(input, modelName);
     await prisma.message.create({
         data: {
             content: input,
             sender: user.name,
-            modelName: model_name,
+            modelName: modelName,
             chatId: chatId,
+            tokenUsages: {
+                create: {
+                    userId: user.id,
+                    tokenOut: tokens,
+                }
+            }
         }
     });
 
     const stream = await client.responses.create({
-        model: 'gpt-4.1-nano',
+        model: modelName,
         instructions: 'You are a coding assistant that talks like an old wizard',
         input: input,
+        max_output_tokens: 1000,
         stream: true,
     });
 
@@ -54,30 +52,36 @@ export const postMessage = async (req: AuthenticatedRequest, res: Response) => {
     }
     res.end();
 
+    const outputTokens = countStringTokens(content, modelName);
     await prisma.message.create({
         data: {
             content: content,
             sender: "agent",
-            modelName: model_name,
+            modelName: modelName,
             chatId: chatId,
+            tokenUsages: {
+                create: {
+                    userId: user.id,
+                    tokenOut: outputTokens,
+                }
+            }
         }
     });
+
 }
 
 
-
-// const response = await client.responses.create({
-//     model: 'gpt-4o',
-//     instructions: 'You are a coding assistant that talks like a pirate',
-//     input: 'Are semicolons optional in JavaScript?',
-// });
-
-// console.log(response.output_text);
-
-
-const createOpenAIClient = () => {
+function createOpenAIClient() {
     const client = new OpenAI({
         apiKey: process.env.OPENAI_API_KEY as string,
     });
     return client;
+}
+
+function countStringTokens(input: string, model: string): number {
+    const encoding = encoding_for_model(model as TiktokenModel);
+    const tokens = encoding.encode(input);
+    const count = tokens.length;
+    encoding.free();
+    return count;
 }

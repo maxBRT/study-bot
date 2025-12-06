@@ -53,7 +53,7 @@ POST http://localhost:3000/messages
 Content-Type: application/json
 
 {
-  "input": "Hello, how are you?",
-  "chatId": "cmis2v9o30000ccsbrkxr4x35",
-  "model_name": "gpt-4.1-nano"
+  "input": "Tell me, what is the best programming language?",
+  "chatId": "cmiuenr090000mdsbsstgien8",
+  "modelName": "gpt-4.1-nano"
 }

@@ -8,16 +8,19 @@ datasource db {
 }
 
 model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean   @default(false)
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-  chats         Chat[]
+  id             String       @id
+  name           String
+  email          String
+  emailVerified  Boolean      @default(false)
+  image          String?
+  tokens         BigInt       @default(10000)
+  tokenRefreshAt DateTime     @default(now())
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  sessions       Session[]
+  accounts       Account[]
+  chats          Chat[]
+  tokenUsages    TokenUsage[]
 
   @@unique([email])
   @@map("user")
@@ -95,10 +98,25 @@ model Message {
   chatId    String
   chat      Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
 
-  content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  content     String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  tokenUsages TokenUsage[]
 
   @@index([chatId])
   @@map("message")
+}
+
+model TokenUsage {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messageId String?
+  message   Message? @relation(fields: [messageId], references: [id], onDelete: SetNull)
+  tokenIn   BigInt?
+  tokenOut  BigInt?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("token_usage")
 }
