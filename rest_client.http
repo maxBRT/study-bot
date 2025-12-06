@@ -43,11 +43,10 @@ Origin: http://localhost:3000
 GET http://localhost:3000/chats
 
 ### Get /chats/:id
-GET http://localhost:3000/chats/cmiqq9rxh0000nosbbmelebvj
+GET http://localhost:3000/chats/cmiujx4wc0000s5sbtqdlaru8
 
 ### Delete /chats/:id
 DELETE http://localhost:3000/chats/cmis2v9o30000ccsbrkxr4x35
-
 
 ### Post /messages
 POST http://localhost:3000/messages

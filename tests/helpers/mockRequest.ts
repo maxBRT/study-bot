@@ -1,7 +1,30 @@
-import type { Response } from 'express';
+import type { Request, Response } from 'express';
 import type { AuthenticatedRequest } from '../../src/types/express';
 import type { User } from '../../src/generated/prisma/client';
 import prisma from '../../src/lib/prisma';
+
+// Create a mock request for unit testing
+export function createMockRequest(options: {
+    body?: any;
+    params?: any;
+    query?: any;
+    headers?: any;
+    method?: string;
+    url?: string;
+} = {}): Request {
+    return {
+        body: options.body || {},
+        params: options.params || {},
+        query: options.query || {},
+        headers: options.headers || {},
+        method: options.method || 'GET',
+        url: options.url || '/',
+        get: (name: string) => {
+            const headers = options.headers || {};
+            return headers[name.toLowerCase()];
+        },
+    } as Request;
+}
 
 // Create a mock authenticated request for unit testing
 export async function createMockAuthRequest(

@@ -14,24 +14,13 @@ const app = express();
 
 // Set up Better Auth
 app.all('/api/auth/{*any}', toNodeHandler(auth));
-
-// Add middlewares
 app.use(express.json());
 
 
+// Authenticated routes
+app.use(authMiddleware);
 app.use("/chats", chatRouter);
 app.use("/messages", messagesRouter);
-
-
-app.get("/protected", authMiddleware, async (req, res) => {
-    const user = req.user;
-    const session = req.session;
-    res.json({
-        message: "API is running",
-        user,
-        session,
-    });
-});
 
 // Start the server
 app.listen(process.env.PORT || 3000, () => {
