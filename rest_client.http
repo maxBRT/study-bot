@@ -54,7 +54,7 @@ POST http://localhost:3000/messages
 Content-Type: application/json
 
 {
-  "input": "Tell me, why does typescript feel like its not really compiled (like java or go)?",
-  "chatId": "cmiufsq2g000070sb06jyghdz",
+  "input": "Tell me, why does not typescript feel like its not really compiled (like java or go)?",
+  "chatId": "cmiujx4wc0000s5sbtqdlaru8",
   "modelName": "gpt-4.1-nano"
 }

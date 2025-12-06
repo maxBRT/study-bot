@@ -5,6 +5,6 @@ import { tokenUsageMiddleware } from '../middlewares/token';
 
 const router = Router();
 
-router.post('/', authMiddleware, tokenUsageMiddleware as RequestMiddleware, sendMessage as RequestHandler);
+router.post('/', authMiddleware, tokenUsageMiddleware as RequestHandler, sendMessage as RequestHandler);
 
 export default router;

@@ -2,7 +2,6 @@ import type { NextFunction, Request, Response } from "express";
 import { fromNodeHeaders } from "better-auth/node";
 import { auth } from "../lib/auth";
 import prisma from "../lib/prisma";
-import type { AuthenticatedRequest } from "../types/express";
 
 export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
     const result = await auth.api.getSession({
