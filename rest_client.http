@@ -53,7 +53,24 @@ POST http://localhost:3000/messages
 Content-Type: application/json
 
 {
-  "input": "Why can't you write the essay?",
-  "chatId": "cmiujx4wc0000s5sbtqdlaru8",
+  "input": "Yes its like the warlus operator in go. It infer the type of the variable based on the value.",
+  "chatId": "cmiw0r5pm0000d4sbyd34mot8",
   "modelName": "gpt-4.1-nano"
 }
+
+### Post /webhooks/stripe
+POST http://localhost:3000/webhooks/stripe
+Content-Type: application/json
+
+{
+  "metadata": {
+    "userId": "ACajPgfTJN6pwQYmealMbxcUZzHTqkLR",
+    "tokenAmount": "10000"
+  }
+}
+
+### Get /me
+GET http://localhost:3000/me
+
+### Get /token-usages
+GET http://localhost:3000/token-usages

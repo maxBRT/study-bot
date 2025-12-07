@@ -7,7 +7,6 @@ import prisma from '../lib/prisma';
 import type { User } from '../generated/prisma/client';
 import fs from 'fs';
 import path from 'path';
-import { get } from 'http';
 
 
 dotenv.config();
@@ -28,19 +27,13 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
         }
 
         // Register the message in the database
-        const inputTokens = countStringTokens(input, modelName);
-        await prisma.message.create({
+        let inputTokens = countStringTokens(input, modelName);
+        const msg = await prisma.message.create({
             data: {
                 content: input,
                 sender: "user",
                 modelName: modelName,
                 chatId: chatId,
-                tokenUsages: {
-                    create: {
-                        userId: user.id,
-                        tokenOut: inputTokens,
-                    }
-                }
             }
         });
 
@@ -57,7 +50,17 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
             },
             take: 10,
         });
-
+        for (const m of messages) {
+            inputTokens += countStringTokens(m.content, modelName);
+        }
+        await prisma.tokenUsage.create({
+            data: {
+                userId: user.id,
+                messageId: msg.id,
+                tokenIn: 0,
+                tokenOut: inputTokens,
+            }
+        });
 
         const systemPrompt: OpenAI.Chat.ChatCompletionMessageParam = {
             role: "system",
