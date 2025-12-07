@@ -51,7 +51,6 @@ export async function getTokenUsage(req: AuthenticatedRequest, res: Response) {
     }
 }
 
-
 async function getTokenUsagesForUser(user: any) {
     const tokenUsages = await prisma.tokenUsage.findMany({
         where: {
