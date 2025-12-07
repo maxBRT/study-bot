@@ -38,6 +38,12 @@ export const processTokenPurchase = async (req: Request, res: Response) => {
                 tokens: user.tokens + BigInt(metadata.tokenAmount),
             }
         });
+        await prisma.tokenUsage.create({
+            data: {
+                userId: user.id,
+                tokenIn: metadata.tokenAmount,
+            }
+        });
 
         // Return success response
         return res.status(200).json({
