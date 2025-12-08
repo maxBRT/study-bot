@@ -229,6 +229,8 @@ Le fichier [rest_client.http](rest_client.http) permet de tester tous les endpoi
 
 Le script [tests/stream.sh](tests/stream.sh) permet de tester le streaming en temps réel dans le terminal :
 
+dépendance -> [curl](https://curl.se/windows/)
+
 ```bash
 chmod +x tests/stream.sh
 ./tests/stream.sh
