@@ -27,7 +27,6 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
         }
 
         // Register the message in the database
-        let inputTokens = countStringTokens(input, modelName);
         const msg = await prisma.message.create({
             data: {
                 content: input,
@@ -50,9 +49,13 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
             },
             take: 10,
         });
+
+        // Count tokens for all messages (including the new one)
+        let inputTokens = 0;
         for (const m of messages) {
             inputTokens += countStringTokens(m.content, modelName);
         }
+
         await prisma.tokenUsage.create({
             data: {
                 userId: user.id,
@@ -84,6 +87,7 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
         let content = '';
 
         // Stream to the client
+        res.status(201);
         res.setHeader('Content-Type', 'text/event-stream');
         res.setHeader('Cache-Control', 'no-cache');
         res.setHeader('Connection', 'keep-alive');
@@ -162,12 +166,22 @@ function countStringTokens(input: string, model: string): number {
 }
 
 async function chargeTokens(user: User, total: bigint) {
+    // Fetch current user balance to avoid using stale data
+    const currentUser = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: { tokens: true }
+    });
+
+    if (!currentUser) {
+        throw new Error('User not found');
+    }
+
     await prisma.user.update({
         where: {
             id: user.id,
         },
         data: {
-            tokens: user.tokens - total < 0n ? 0n : user.tokens - total,
+            tokens: currentUser.tokens - total < 0n ? 0n : currentUser.tokens - total,
         }
     });
 }

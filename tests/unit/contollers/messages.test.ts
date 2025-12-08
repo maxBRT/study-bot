@@ -37,7 +37,7 @@ describe("Messages controller", () => {
 
             await sendMessage(req, res);
 
-            expect(res.statusCode).toBe(200);
+            expect(res.statusCode).toBe(201);
             expect(res.headers['Content-Type']).toBe('text/event-stream');
         });
         it("should return 400 when input is missing", async () => {

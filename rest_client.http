@@ -1,6 +1,6 @@
-### Get /protected
-GET http://localhost:3000/protected
-
+# Les requetes sont placer dans l'ordre logique d'exécution
+# rest_client.http sauvegarde les cookies dans un fichier temporaire et les envoie avec chaque requete.
+# La route sign-up te login automatiquement!
 
 ### Get /api/auth/sign-up/email
 POST http://localhost:3000/api/auth/sign-up/email
@@ -8,20 +8,9 @@ Content-Type: application/json
 Origin: http://localhost:3000
 
 {
-  "name": "Max",
-  "email": "max@example.com",
-  "password": "password"
-}
-
-
-### Get /api/auth/sign-in/email
-POST http://localhost:3000/api/auth/sign-in/email
-Content-Type: application/json
-Origin: http://localhost:3000
-
-{
-  "email": "max@example.com",
-  "password": "password"
+  "name": "Eddine",
+  "email": "eddine@example.com",
+  "password": "secret_password"
 }
 
 ### Get /api/auth/sign-out
@@ -29,6 +18,15 @@ POST http://localhost:3000/api/auth/sign-out
 Content-Type: application/json
 Origin: http://localhost:3000
 
+### Get /api/auth/sign-in/email
+POST http://localhost:3000/api/auth/sign-in/email
+Content-Type: application/json
+Origin: http://localhost:3000
+
+{
+  "email": "eddine@example.com",
+  "password": "secret_password"
+}
 
 ### Post /chats
 POST http://localhost:3000/chats
@@ -36,35 +34,35 @@ Content-Type: application/json
 Origin: http://localhost:3000
 
 {
-  "title": "Test"
+  "title": "Nouveau Chat"
 }
 
 ### Get /chats
 GET http://localhost:3000/chats
 
-### Get /chats/:id
-GET http://localhost:3000/chats/cmiujx4wc0000s5sbtqdlaru8
+### Get /chats/:id (Ajoute le id du chat)
+GET http://localhost:3000/chats/******
 
 ### Delete /chats/:id
-DELETE http://localhost:3000/chats/cmis2v9o30000ccsbrkxr4x35
+DELETE http://localhost:3000/chats/******
 
 ### Post /messages
 POST http://localhost:3000/messages
 Content-Type: application/json
-
+# Ajoute le id du chat dans le body 
 {
-  "input": "Yes its like the warlus operator in go. It infer the type of the variable based on the value.",
-  "chatId": "cmiw0r5pm0000d4sbyd34mot8",
+  "input": "Can you write me an essay about AI ?",
+  "chatId": "*****",
   "modelName": "gpt-4.1-nano"
 }
 
 ### Post /webhooks/stripe
 POST http://localhost:3000/webhooks/stripe
 Content-Type: application/json
-
+# Ajoute ton ID dans le body
 {
   "metadata": {
-    "userId": "ACajPgfTJN6pwQYmealMbxcUZzHTqkLR",
+    "userId": "********",
     "tokenAmount": "10000"
   }
 }
