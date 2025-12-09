@@ -4,42 +4,6 @@ Backend d'une application web de chat avec intelligence artificielle permettant 
 
 ## Architecture du Projet
 
-### Structure des Dossiers
-
-```
-study-bot/
-├── src/
-│   ├── app.ts                   # Point d'entrée de l'application
-│   ├── controllers/             # Logique métier
-│   │   ├── chats.ts             # Gestion des conversations
-│   │   ├── messages.ts          # Envoi et réception de messages
-│   │   ├── me.ts                # Informations utilisateur
-│   │   ├── tokenUsages.ts       # Gestion de l'utilisation des tokens
-│   │   └── webhooks.ts          # Endpoints pour "Acheter des tokens"
-│   ├── middlewares/             # Middlewares Express
-│   │   ├── auth.ts              # Vérification de l'authentification
-│   │   └── token.ts             # Vérification des tokens disponibles
-│   ├── routes/                  # Définition des routes
-│   │   ├── chats.ts
-│   │   ├── messages.ts
-│   │   ├── tokenUsages.ts
-│   │   └── webhooks.ts
-│   ├── lib/                     # Utilitaires et configurations
-│   │   ├── auth.ts              # Configuration Better Auth
-│   │   └── prisma.ts            # Client Prisma
-│   └── generated/               # Code généré par Prisma
-├── prisma/
-│   └── schema.prisma            # Schéma de la base de données
-├── tests/
-│   ├── unit/                    # Tests unitaires par composant
-│   │   ├── controllers/
-│   │   └── middlewares/
-│   ├── integration/             # Tests d'intégration end-to-end
-│   └── helpers/                 # Utilitaires pour les tests
-├── vitest.config.ts             # Configuration des tests
-└── package.json
-```
-
 ### Composants Principaux
 
 #### 1. Authentification (Better Auth)
@@ -50,8 +14,13 @@ L'application utilise [Better Auth](https://www.better-auth.com/) pour gérer l'
 - Gestion des sessions
 - Middleware d'authentification pour protéger les routes
 
-> Le restes des fonctionnalités d'autentification comme la vérification des emails, les mots de passe oubliés et les
-> connexions avec 0Auth seront implémentées sur le front-end.
+> Le restes des fonctionnalités d'autentification comme:
+> - la vérification des email
+> - les mots de passe oubliés
+> - les connexions avec 0Auth seront implémentées sur le front-end.
+> - le changement de courriel.
+> - la suppression du compte.
+> Seront tous implémenter sur le frontend avec BetterAuth -> [Voir doc](https://www.better-auth.com/docs/concepts/users-accounts)
 
 **Routes d'authentification :**
 
