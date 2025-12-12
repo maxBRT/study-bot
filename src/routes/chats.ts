@@ -1,6 +1,6 @@
 import { Router } from "express";
 import type { RequestHandler } from "express";
-import { createChat, getChatsForUser, getChat, deleteChat } from "../controllers/chats";
+import { createChat, getChatsForUser, getChat, deleteChat, updateChat } from "../controllers/chats";
 
 const router = Router();
 
@@ -9,6 +9,7 @@ const router = Router();
 router.get("/", getChatsForUser as RequestHandler);
 router.get("/:id", getChat as RequestHandler);
 router.post("/", createChat as RequestHandler);
+router.put("/:id", updateChat as RequestHandler);
 router.delete("/:id", deleteChat as RequestHandler);
 
 export default router;

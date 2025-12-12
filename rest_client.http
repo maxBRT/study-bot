@@ -9,7 +9,7 @@ Origin: http://localhost:3000
 
 {
   "name": "Eddine",
-  "email": "eddine@example.com",
+  "email": "eddine@email.com",
   "password": "secret_password"
 }
 
@@ -24,7 +24,7 @@ Content-Type: application/json
 Origin: http://localhost:3000
 
 {
-  "email": "eddine@example.com",
+  "email": "eddine@email.com",
   "password": "secret_password"
 }
 
@@ -42,6 +42,15 @@ GET http://localhost:3000/chats
 
 ### Get /chats/:id (Ajoute le id du chat)
 GET http://localhost:3000/chats/******
+
+
+### Put /chats/:id
+PUT http://localhost:3000/chats/******
+Content-Type: application/json
+
+{
+  "title": "Nouveau Titre"
+}
 
 ### Delete /chats/:id
 DELETE http://localhost:3000/chats/******
@@ -70,5 +79,10 @@ Content-Type: application/json
 ### Get /me
 GET http://localhost:3000/me
 
+### Get /me/stats
+GET http://localhost:3000/me/stats
+
 ### Get /token-usages
 GET http://localhost:3000/token-usages
+
+

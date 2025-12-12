@@ -3,12 +3,11 @@ import type { AuthenticatedRequest } from "../types/express";
 import prisma from "../lib/prisma";
 
 export async function tokenUsageMiddleware(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+
     const requiredTokens = 50;
     const user = req.user;
 
-    console.log(`User ${user.id} has ${user.tokens} tokens`);
-    console.log(`User ${user.id} will refresh at ${user.tokenRefreshAt}`);
-
+    // Check if the tokens needs to be refreshed
     if (user.tokenRefreshAt < new Date(Date.now())) {
         const updatedUser = await prisma.user.update({
             where: {
@@ -16,12 +15,14 @@ export async function tokenUsageMiddleware(req: AuthenticatedRequest, res: Respo
             },
             data: {
                 tokens: 1000n,
+                // Set the token refresh time to 2 minutes from now
                 tokenRefreshAt: new Date(Date.now() + 1000 * 60 * 2),
             }
         });
         req.user = updatedUser;
     }
 
+    // Check if the has enough tokens
     if (req.user.tokens < requiredTokens) {
         return res.status(403).json({
             message: `Token are refreshing at ${req.user.tokenRefreshAt}`,

@@ -1,21 +1,25 @@
 import type { Response } from 'express';
 import prisma from '../lib/prisma';
 import type { AuthenticatedRequest } from '../types/express';
+import type { User } from 'better-auth';
 
 export async function listTokenUsages(req: AuthenticatedRequest, res: Response) {
     try {
+        // Get the user's data
         const user = req.user;
         const tokenUsages = await getTokenUsagesForUser(user);
+
+        // Return the token usages
         res.status(200).json({
             success: true,
             message: 'Token usages retrieved successfully',
             tokenUsages,
         });
-    } catch (error) {
+    } catch (error: any) {
         res.status(500).json({
             success: false,
             message: 'Internal server error',
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error.message
         });
     }
 }
@@ -42,16 +46,16 @@ export async function getTokenUsage(req: AuthenticatedRequest, res: Response) {
             message: 'Token usage retrieved successfully',
             tokenUsage,
         });
-    } catch (error) {
+    } catch (error: any) {
         res.status(500).json({
             success: false,
             message: 'Internal server error',
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error.message
         });
     }
 }
 
-async function getTokenUsagesForUser(user: any) {
+async function getTokenUsagesForUser(user: User) {
     const tokenUsages = await prisma.tokenUsage.findMany({
         where: {
             userId: user.id,
@@ -60,6 +64,8 @@ async function getTokenUsagesForUser(user: any) {
             createdAt: 'desc',
         },
     });
+
+    // Convert BigInt values to strings for JSON serialization
     return tokenUsages.map(usage => ({
         ...usage,
         tokenIn: usage.tokenIn?.toString() ?? "0",

@@ -1,6 +1,6 @@
 # Study Bot
 
-Backend d'une application web de chat avec intelligence artificielle permettant aux utilisateurs de créer des conversations avec un assistant IA. Le système inclut un mécanisme de gestion de tokens pour contrôler l'utilisation de l'API OpenAI.
+Backend d'un service web de chat avec intelligence artificielle permettant aux étudiant de créer des conversations avec un assistant IA. Le système inclut un mécanisme de gestion de tokens pour contrôler l'utilisation de l'API OpenAI.
 
 ## Architecture du Projet
 
@@ -11,16 +11,17 @@ Backend d'une application web de chat avec intelligence artificielle permettant 
 L'application utilise [Better Auth](https://www.better-auth.com/) pour gérer l'authentification des utilisateurs :
 
 - Inscription/connexion par email et mot de passe
+- Vérification du email
 - Gestion des sessions
 - Middleware d'authentification pour protéger les routes
 
 > Le restes des fonctionnalités d'autentification comme:
-> - la vérification des email
+>
 > - les mots de passe oubliés
-> - les connexions avec 0Auth seront implémentées sur le front-end.
-> - le changement de courriel.
-> - la suppression du compte.
-> Seront tous implémenter sur le frontend avec BetterAuth -> [Voir doc](https://www.better-auth.com/docs/concepts/users-accounts)
+> - les connexions avec 0Auth 
+> - le changement de courriel
+> - la suppression du compte
+>   Seront tous implémenter sur le frontend avec BetterAuth -> [Voir doc](https://www.better-auth.com/docs/concepts/users-accounts)
 
 **Routes d'authentification :**
 
@@ -32,63 +33,28 @@ L'application utilise [Better Auth](https://www.better-auth.com/) pour gérer l'
 
 #### 3. Routes API
 
-**Routes publiques :**
-
-- `/api/auth/*` - Authentification
-- `/webhooks/stripe` - Endpoints pour "Acheter des tokens" (Simule un webhook stripe)
-
-**Routes protégées** (nécessitent authentification) :
-
-- `GET /chats` - Lister les conversations de l'utilisateur
-- `GET /chats/:id` - Obtenir une conversation spécifique avec ses messages
-- `POST /chats` - Créer une nouvelle conversation
-- `DELETE /chats/:id` - Supprimer une conversation
-- `POST /messages` - Envoyer un message à l'IA (streaming)
-- `GET /me` - Obtenir les informations de l'utilisateur connecté
-- `GET /token-usages` - Lister les transaction de tokens
-- `GET /token-usages/:id` - Obtenir une utilisation spécifique
+Ouvre [http://localhost:3000/docs](http://localhost:3000/docs) pour accéder à la documentation de l'API.
+La documentation est générée à partir de l'OpenAPI v3 défini dans [docs/openapi.ts](docs/openapi.ts).
 
 #### 4. Gestion des Tokens
 
-Le système implémente un mécanisme de "pay-per-use" :
+Le système implémente un mécanisme "pay-per-use" (Tel que mentionné dans le dernier TP):
 
 1. Chaque utilisateur commence avec 1000 tokens gratuits
 2. Les tokens se rechargent automatiquement (1000 tokens aux 2 minutes pour faciliter les tests)
-3. Avant chaque message, le middleware `tokenUsageMiddleware` vérifie qu'il reste au moins 100 tokens
-4. Après chaque réponse de l'IA, les tokens consommés sont déduits du solde
+3. Avant chaque message, le middleware `tokenUsageMiddleware` vérifie qu'il reste au moins 50 tokens
+4. Après chaque réponse de l'IA, les tokens consommés sont déduits du solde de l'utilisateur
 5. Les utilisateurs peuvent acheter des tokens supplémentaires via `/webhooks/stripe`
 
 #### 5. Intégration OpenAI
 
 L'application utilise l'API Chat Completion d'OpenAI avec :
 
-- Streaming des réponses (Server-Sent Events)
-- Support de plusieurs modèles (les tests utilisent gpt-4.1-nano pour réduire les couts)
+- Streaming des réponses
+- Support de plusieurs modèles (les tests utilisent gpt-4.1-nano pour réduire les couts.)
 - Comptage des tokens avec la bibliothèque `tiktoken`
 - Contexte conversationnel (historique des messages)
 - Instructions système pour guider le comportement de l'IA ([prompts/system.md](prompts/system.md))
-
-### Flux de Données
-
-1. **Authentification**
-
-   ```
-   Client → POST /api/auth/sign-in/email
-         → Better Auth vérifie les credentials
-         → Session créée et cookie envoyé
-   ```
-
-2. **Envoi d'un message**
-   ```
-   Client → POST /messages {input, chatId, modelName}
-         → authMiddleware vérifie la session
-         → tokenUsageMiddleware vérifie le solde de tokens
-         → Récupération de l'historique du chat
-         → Appel à l'API OpenAI avec streaming
-         → Calcul et déduction des tokens consommés
-         → Sauvegarde du message et des TokenUsage
-         → Réponse streamée au client (SSE)
-   ```
 
 ## Installation et Configuration
 
@@ -108,6 +74,8 @@ L'application utilise l'API Chat Completion d'OpenAI avec :
 3. **Configurer les variables d'environnement**
 
 Copier les variables d'environnement fournies dans le fichier de remise dans `.env` à la racine du projet.
+
+> Note: [Resend](https://resend.com/docs/dashboard/emails/introduction) (la librairie utilisée pour envoyer les emails) propose un domaine de test, mais il permet seulement d'envoyer des courriels à l'adresse liée au compte avec lequel la clé a été créée. Si tu souhaites le tester de ton côté, il faudra te créer un compte et remplacer les variables d'environnement `RESEND_API_KEY` et `RESEND_EMAIL`.
 
 4. **Générer le client Prisma et migrer la base de données**
 
@@ -192,13 +160,15 @@ Le fichier [tests/integration/userJourney.test.ts](tests/integration/userJourney
 
 **REST Client :**
 
-Le fichier [rest_client.http](rest_client.http) permet de tester tous les endpoints directement dans VSCode avec l'extension "REST Client".
+Le fichier [rest_client.http](rest_client.http) permet de tester tous les endpoints directement.
 
 **Script de Streaming :**
 
 Le script [tests/stream.sh](tests/stream.sh) permet de tester le streaming en temps réel dans le terminal :
 
-dépendance -> [curl](https://curl.se/windows/)
+Il est dépendant de [curl](https://curl.se/windows/) et assez primitif ; son seul but est de tester le streaming.
+Si tu souhaites tester les comportements de l'IA, je te recommande d'interagir avec le `rest_client.http`.
+
 
 ```bash
 chmod +x tests/stream.sh
@@ -215,6 +185,8 @@ chmod +x tests/stream.sh
 - **Backend** : Node.js, Express.js, TypeScript
 - **Base de données** : PostgreSQL (Neon), Prisma ORM
 - **Authentification** : Better Auth
+- **Email** : Resend
+- **Documentation** : ReDoc
 - **IA** : OpenAI API
 - **Tests** : Vitest
 - **Utilitaires** : tiktoken (comptage de tokens), dotenv

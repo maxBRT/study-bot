@@ -18,11 +18,10 @@ export async function createTestUser(): Promise<{ user: User; sessionToken: stri
             name,
         },
     });
-
-    if (!signUpResult || !signUpResult.user) {
+    console.log(signUpResult);
+    if (!signUpResult || !signUpResult.user || !signUpResult.token) {
         throw new Error('Failed to create test user');
     }
-
 
     // Get the updated user
     const user = await prisma.user.findUnique({
@@ -33,12 +32,9 @@ export async function createTestUser(): Promise<{ user: User; sessionToken: stri
         throw new Error('User not found after creation');
     }
 
-    // Extract session token from headers
-    const sessionToken = signUpResult.token as string;
-
     return {
         user,
-        sessionToken,
+        sessionToken: signUpResult.token,
     };
 }
 

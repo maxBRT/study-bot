@@ -24,11 +24,14 @@ describe("Auth middleware", () => {
             const res = createMockResponse();
             const next = vi.fn();
 
+            console.log(sessionToken);
+
             await authMiddleware(req, res, next);
 
             expect(req.user).toBeDefined();
             expect(req.user.id).toBe(user.id);
             expect(req.session).toBeDefined();
+            console.log(req.session);
             expect(req.session.token).toBe(sessionToken);
         });
 

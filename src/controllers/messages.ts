@@ -36,6 +36,7 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
             }
         });
 
+        // Get the conversation history
         const messages = await prisma.message.findMany({
             where: {
                 chatId: chatId,
@@ -50,7 +51,7 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
             take: 10,
         });
 
-        // Count tokens for all messages (including the new one)
+        // Count tokens for all messages 
         let inputTokens = 0;
         for (const m of messages) {
             inputTokens += countStringTokens(m.content, modelName);
@@ -70,6 +71,7 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
             content: getSystemPrompt(),
         };
 
+        // Format messages for OpenAI
         const formattedMessages = messages.map(m => ({
             role: m.sender === "agent" ? "assistant" : "user",
             content: m.content
@@ -130,20 +132,11 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
             });
         }
 
-        // Prisma errors
-        if (error.code && error.code.startsWith('P')) {
-            return res.status(500).json({
-                success: false,
-                message: 'Database error',
-                error: error.message
-            });
-        }
-
         // general errors
         return res.status(500).json({
             success: false,
             message: 'Internal server error',
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error.message
         });
     }
 }

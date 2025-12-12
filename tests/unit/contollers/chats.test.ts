@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach } from "vitest";
-import { createChat, getChatsForUser, getChat, deleteChat } from "../../../src/controllers/chats";
+import { createChat, getChatsForUser, getChat, deleteChat, updateChat } from "../../../src/controllers/chats";
 import { createMockAuthRequest, createMockResponse } from "../../helpers/mockRequest";
 import { createTestUser } from "../../helpers/authHelpers";
 import prisma from "../../../src/lib/prisma";
@@ -145,4 +145,57 @@ describe("Chats controller", () => {
             expect(deletedChat).toBeNull();
         });
     });
+    describe("updateChat", () => {
+        it("should update a chat successfully", async () => {
+            const { user } = await createTestUser();
+
+            const chat = await prisma.chat.create({
+                data: {
+                    id: 'chat-to-update',
+                    title: 'Chat to Update',
+                    userId: user.id,
+                }
+            });
+
+            const req = await createMockAuthRequest(user, {
+                params: { id: chat.id },
+                body: { title: 'Updated Chat Title' }
+            });
+            const res = createMockResponse();
+
+            await updateChat(req, res);
+
+            expect(res.statusCode).toBe(200);
+            expect(res.body.success).toBe(true);
+
+            const updatedChat = await prisma.chat.findUnique({
+                where: { id: chat.id }
+            });
+            expect(updatedChat?.title).toBe('Updated Chat Title');
+        });
+
+        it("should return 400 when title is missing", async () => {
+            const { user } = await createTestUser();
+
+            const chat = await prisma.chat.create({
+                data: {
+                    id: 'chat-to-update',
+                    title: 'Chat to Update',
+                    userId: user.id,
+                }
+            });
+
+            const req = await createMockAuthRequest(user, {
+                params: { id: chat.id },
+                body: { title: '' }
+            });
+            const res = createMockResponse();
+
+            await updateChat(req, res);
+
+            expect(res.statusCode).toBe(400);
+            expect(res.body.message).toBe('Missing parameters');
+        });
+    });
+
 });

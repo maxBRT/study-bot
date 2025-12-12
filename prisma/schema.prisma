@@ -1,122 +1,122 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+    provider = "prisma-client"
+    output   = "../src/generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
+    provider = "postgresql"
 }
 
 model User {
-  id             String       @id
-  name           String
-  email          String
-  emailVerified  Boolean      @default(false)
-  image          String?
-  tokens         BigInt       @default(1000)
-  tokenRefreshAt DateTime     @default(now())
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  sessions       Session[]
-  accounts       Account[]
-  chats          Chat[]
-  tokenUsages    TokenUsage[]
+    id             String       @id
+    name           String
+    email          String
+    emailVerified  Boolean      @default(false)
+    image          String?
+    tokens         BigInt       @default(1000)
+    tokenRefreshAt DateTime     @default(now())
+    createdAt      DateTime     @default(now())
+    updatedAt      DateTime     @updatedAt
+    sessions       Session[]
+    accounts       Account[]
+    chats          Chat[]
+    tokenUsages    TokenUsage[]
 
-  @@unique([email])
-  @@map("user")
+    @@unique([email])
+    @@map("user")
 }
 
 model Session {
-  id        String   @id
-  expiresAt DateTime
-  token     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  ipAddress String?
-  userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    id        String   @id
+    expiresAt DateTime
+    token     String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    ipAddress String?
+    userAgent String?
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([token])
-  @@index([userId])
-  @@map("session")
+    @@unique([token])
+    @@index([userId])
+    @@map("session")
 }
 
 // Générer par Better Auth pour les connections avec provider social (Google, GitHub, ect).
 // Pas utiliser par mon application pour l'instant mais Better Auth en dépend.
 model Account {
-  id                    String    @id
-  accountId             String
-  providerId            String
-  userId                String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accessToken           String?
-  refreshToken          String?
-  idToken               String?
-  accessTokenExpiresAt  DateTime?
-  refreshTokenExpiresAt DateTime?
-  scope                 String?
-  password              String?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+    id                    String    @id
+    accountId             String
+    providerId            String
+    userId                String
+    user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    accessToken           String?
+    refreshToken          String?
+    idToken               String?
+    accessTokenExpiresAt  DateTime?
+    refreshTokenExpiresAt DateTime?
+    scope                 String?
+    password              String?
+    createdAt             DateTime  @default(now())
+    updatedAt             DateTime  @updatedAt
 
-  @@index([userId])
-  @@map("account")
+    @@index([userId])
+    @@map("account")
 }
 
 // Table utiliser pour la gestion des emails (verification, password reset, etc.)
 model Verification {
-  id         String   @id
-  identifier String // le email ou le token est envoyer
-  value      String // le token ou le code est envoyer
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+    id         String   @id
+    identifier String // le email ou le token est envoyer
+    value      String // le token ou le code est envoyer
+    expiresAt  DateTime
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
 
-  @@index([identifier])
-  @@map("verification")
+    @@index([identifier])
+    @@map("verification")
 }
 
 model Chat {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  title     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+    id        String   @id @default(cuid())
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    title     String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-  messages Message[]
+    messages Message[]
 
-  @@index([userId])
-  @@map("chat")
+    @@index([userId])
+    @@map("chat")
 }
 
 model Message {
-  id        String @id @default(cuid())
-  sender    String
-  modelName String
-  chatId    String
-  chat      Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+    id        String @id @default(cuid())
+    sender    String
+    modelName String
+    chatId    String
+    chat      Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
 
-  content     String
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  tokenUsages TokenUsage[]
+    content     String
+    createdAt   DateTime     @default(now())
+    updatedAt   DateTime     @updatedAt
+    tokenUsages TokenUsage[]
 
-  @@index([chatId])
-  @@map("message")
+    @@index([chatId])
+    @@map("message")
 }
 
 model TokenUsage {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  messageId String?
-  message   Message? @relation(fields: [messageId], references: [id], onDelete: SetNull)
-  tokenIn   BigInt?
-  tokenOut  BigInt?
-  createdAt DateTime @default(now())
+    id        String   @id @default(cuid())
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    messageId String?
+    message   Message? @relation(fields: [messageId], references: [id], onDelete: SetNull)
+    tokenIn   BigInt?
+    tokenOut  BigInt?
+    createdAt DateTime @default(now())
 
-  @@index([userId])
-  @@map("token_usage")
+    @@index([userId])
+    @@map("token_usage")
 }
