@@ -1,6 +1,6 @@
 # Study Bot
 
-Backend d'un service web de chat avec intelligence artificielle permettant aux étudiant de créer des conversations avec un assistant IA. Le système inclut un mécanisme de gestion de tokens pour contrôler l'utilisation de l'API OpenAI.
+Backend d'un service web permettant aux étudiant de créer des conversations avec un assistant IA.
 
 ## Architecture du Projet
 
@@ -34,7 +34,7 @@ L'application utilise [Better Auth](https://www.better-auth.com/) pour gérer l'
 #### 3. Routes API
 
 Ouvre [http://localhost:3000/docs](http://localhost:3000/docs) pour accéder à la documentation de l'API.
-La documentation est générée à partir de l'OpenAPI v3 défini dans [docs/openapi.ts](docs/openapi.ts).
+La documentation est générée avec [ReDoc](https://redocly.com/docs/redoc) à partir de l'OpenAPI v3 défini dans [docs/openapi.ts](docs/openapi.ts).
 
 #### 4. Gestion des Tokens
 
@@ -75,7 +75,8 @@ L'application utilise l'API Chat Completion d'OpenAI avec :
 
 Copier les variables d'environnement fournies dans le fichier de remise dans `.env` à la racine du projet.
 
-> Note: [Resend](https://resend.com/docs/dashboard/emails/introduction) (la librairie utilisée pour envoyer les emails) propose un domaine de test, mais il permet seulement d'envoyer des courriels à l'adresse liée au compte avec lequel la clé a été créée. Si tu souhaites le tester de ton côté, il faudra te créer un compte et remplacer les variables d'environnement `RESEND_API_KEY` et `RESEND_EMAIL`.
+> Note: [Resend](https://resend.com/docs/dashboard/emails/introduction) (la librairie utilisée pour envoyer les emails) propose un domaine de test, mais il permet seulement d'envoyer des courriels à l'adresse liée au compte avec lequel la clé a été créée. Si tu souhaites le tester de ton côté, il faudra te créer un compte et remplacer les variables d'environnement `VERIFY_EMAIL`, `RESEND_API_KEY` et `RESEND_EMAIL`.
+> La vérification des courriels est donc désactivée par défault.
 
 4. **Générer le client Prisma et migrer la base de données**
 
@@ -93,7 +94,7 @@ Copier les variables d'environnement fournies dans le fichier de remise dans `.e
 
 L'application utilise **Vitest** comme framework de tests.
 Les tests sont exécutés en mode séquentiel pour éviter les conflits de base de données.
-Malheureusement, ça les rends beaucoup plus lents...
+Malheureusement, ça les rends assez lents... environs 1-2 minutes pour la trentaines de test.
 
 ### Structure des Tests
 
@@ -106,6 +107,7 @@ Le fichier [vitest.config.ts](vitest.config.ts) configure :
 
 - Utilisation d'une base de données de test séparée (`TEST_DATABASE_URL`)
 - Exécution séquentielle pour éviter les conflits de base de données
+- Désactive la vérification des courriels
 - Timeout de 30 secondes pour les tests asynchrones
 
 ### Exécuter les Tests
@@ -120,7 +122,7 @@ npm test -- --ui
 
 #### Tests Unitaires
 
-Les tests unitaires vérifient chaque composant isolément :
+Les tests unitaires vérifient chaque composant :
 
 - **Controllers** : Testent la logique métier de chaque endpoint
 
@@ -166,7 +168,7 @@ Le fichier [rest_client.http](rest_client.http) permet de tester tous les endpoi
 
 Le script [tests/stream.sh](tests/stream.sh) permet de tester le streaming en temps réel dans le terminal :
 
-Il est dépendant de [curl](https://curl.se/windows/) et assez primitif ; son seul but est de tester le streaming.
+Il est dépendant de [curl](https://curl.se/windows/) et assez primitif, son seul but est de tester le streaming.
 Si tu souhaites tester les comportements de l'IA, je te recommande d'interagir avec le `rest_client.http`.
 
 
