@@ -1,3 +1,35 @@
+# Dependencies
 node_modules
+
+# Environment files
 .env
-/src/generated/prisma
+.env.local
+.env.*.local
+
+# Generated files
+backend/src/generated/prisma
+
+# Build outputs
+out
+dist
+*.tgz
+
+# Code coverage
+coverage
+*.lcov
+
+# Logs
+logs
+*.log
+
+# Caches
+.eslintcache
+.cache
+*.tsbuildinfo
+
+# IDE
+.idea
+.vscode
+
+# OS
+.DS_Store
