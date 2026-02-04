@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { signIn, useSession } from "../lib/auth";
+import { useNavigate } from "react-router-dom";
+import { signIn, useSession } from "@/lib/auth";
+import { LoginForm } from "@/components/login-form";
+import { Book } from "lucide-react";
 
 export function Login() {
     const [email, setEmail] = useState("");
@@ -10,7 +12,6 @@ export function Login() {
     const navigate = useNavigate();
     const { data: session } = useSession();
 
-    // Navigate when session becomes available
     useEffect(() => {
         if (session) {
             navigate("/dashboard", { replace: true });
@@ -27,42 +28,39 @@ export function Login() {
         if (error) {
             setError(error.message || "Login failed");
             setIsLoading(false);
-            return;
         }
     }
 
     return (
-        <div>
-            <h1>Login</h1>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="email">Email</label>
-                    <input
-                        id="email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
+        <div className="grid min-h-svh lg:grid-cols-2">
+            <div className="flex flex-col gap-4 p-6 md:p-10">
+                <div className="flex justify-center gap-2 md:justify-start">
+                    <a href="/" className="flex items-center gap-2 font-medium">
+                        <Book className="h-6 w-6" />
+                        Study Bot
+                    </a>
                 </div>
-                <div>
-                    <label htmlFor="password">Password</label>
-                    <input
-                        id="password"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
+                <div className="flex flex-1 items-center justify-center">
+                    <div className="w-full max-w-xs">
+                        <LoginForm
+                            email={email}
+                            setEmail={setEmail}
+                            password={password}
+                            setPassword={setPassword}
+                            onSubmit={handleSubmit}
+                            isLoading={isLoading}
+                            error={error}
+                        />
+                    </div>
                 </div>
-                <button type="submit" disabled={isLoading}>
-                    {isLoading ? "Logging in..." : "Login"}
-                </button>
-            </form>
-            <p>
-                Don't have an account? <Link to="/register">Register</Link>
-            </p>
+            </div>
+            <div className="relative hidden bg-muted lg:block">
+                <img
+                    src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1280&q=80"
+                    alt="Study"
+                    className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+                />
+            </div>
         </div>
     );
 }

@@ -1,18 +1,34 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { signUp } from "../lib/auth";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { signUp, useSession } from "@/lib/auth";
+import { SignupForm } from "@/components/signup-form";
+import { Book } from "lucide-react";
 
 export function Register() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const { data: session } = useSession();
+
+    useEffect(() => {
+        if (session) {
+            navigate("/dashboard", { replace: true });
+        }
+    }, [session, navigate]);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setError("");
+
+        if (password !== confirmPassword) {
+            setError("Passwords do not match");
+            return;
+        }
+
         setIsLoading(true);
 
         const { error } = await signUp.email({ name, email, password });
@@ -20,54 +36,43 @@ export function Register() {
         if (error) {
             setError(error.message || "Registration failed");
             setIsLoading(false);
-            return;
         }
-
-        navigate("/dashboard", { replace: true });
     }
 
     return (
-        <div>
-            <h1>Register</h1>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="name">Name</label>
-                    <input
-                        id="name"
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                    />
+        <div className="grid min-h-svh lg:grid-cols-2">
+            <div className="flex flex-col gap-4 p-6 md:p-10">
+                <div className="flex justify-center gap-2 md:justify-start">
+                    <a href="/" className="flex items-center gap-2 font-medium">
+                        <Book className="h-6 w-6" />
+                        Study Bot
+                    </a>
                 </div>
-                <div>
-                    <label htmlFor="email">Email</label>
-                    <input
-                        id="email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
+                <div className="flex flex-1 items-center justify-center">
+                    <div className="w-full max-w-xs">
+                        <SignupForm
+                            name={name}
+                            setName={setName}
+                            email={email}
+                            setEmail={setEmail}
+                            password={password}
+                            setPassword={setPassword}
+                            confirmPassword={confirmPassword}
+                            setConfirmPassword={setConfirmPassword}
+                            onSubmit={handleSubmit}
+                            isLoading={isLoading}
+                            error={error}
+                        />
+                    </div>
                 </div>
-                <div>
-                    <label htmlFor="password">Password</label>
-                    <input
-                        id="password"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit" disabled={isLoading}>
-                    {isLoading ? "Registering..." : "Register"}
-                </button>
-            </form>
-            <p>
-                Already have an account? <Link to="/login">Login</Link>
-            </p>
+            </div>
+            <div className="relative hidden bg-muted lg:block">
+                <img
+                    src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1280&q=80"
+                    alt="Study"
+                    className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+                />
+            </div>
         </div>
     );
 }

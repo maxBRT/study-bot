@@ -16,7 +16,7 @@ export function App() {
 
             {/* Protected routes */}
             <Route element={<ProtectedRoute />}>
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/dashboard/:id?" element={<Dashboard />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
