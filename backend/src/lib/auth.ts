@@ -10,8 +10,19 @@ export const auth = betterAuth({
     // Base URL for the API
     baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
 
+    // Social login
+    socialProviders: {
+        github: {
+            clientId: process.env.GITHUB_CLIENT_ID as string,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+        },
+    },
+
     // Secret key for the API
     secret: process.env.BETTER_AUTH_SECRET,
+
+    // Trusted origins for CORS
+    trustedOrigins: [process.env.FRONTEND_URL || "http://localhost:4321"],
 
     // Database configuration (prisma)
     database: prismaAdapter(prisma, {

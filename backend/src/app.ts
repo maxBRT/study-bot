@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import dotenv from "dotenv";
 import { auth } from "./lib/auth";
 import { toNodeHandler } from "better-auth/node";
@@ -17,6 +18,12 @@ dotenv.config();
 
 // Create an Express app
 const app = express();
+
+// CORS configuration
+app.use(cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:4321",
+    credentials: true,
+}));
 
 // Redoc setup
 app.get('/docs/openapi.json', (req, res) => {
