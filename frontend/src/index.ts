@@ -1,33 +1,24 @@
 import { serve } from "bun";
 import index from "./index.html";
 
+const API_URL = Bun.env.API_URL || "http://localhost:3000";
+
 const server = serve({
     port: 4321,
     routes: {
-        // Serve index.html for all unmatched routes.
-        "/*": index,
-
-        "/api/hello": {
-            async GET(req) {
-                return Response.json({
-                    message: "Hello, world!",
-                    method: "GET",
-                });
-            },
-            async PUT(req) {
-                return Response.json({
-                    message: "Hello, world!",
-                    method: "PUT",
-                });
-            },
-        },
-
-        "/api/hello/:name": async req => {
-            const name = req.params.name;
-            return Response.json({
-                message: `Hello, ${name}!`,
+        // Proxy API requests to backend
+        "/api/*": async (req) => {
+            const url = new URL(req.url);
+            const backendUrl = `${API_URL}${url.pathname}${url.search}`;
+            return fetch(backendUrl, {
+                method: req.method,
+                headers: req.headers,
+                body: req.body,
             });
         },
+
+        // Serve index.html for all unmatched routes
+        "/*": index,
     },
 
     development: process.env.NODE_ENV !== "production" && {

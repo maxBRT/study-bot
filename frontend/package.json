@@ -9,8 +9,11 @@
     "start": "NODE_ENV=production bun src/index.ts"
   },
   "dependencies": {
+    "better-auth": "^1.4.18",
+    "dotenv": "^17.2.3",
     "react": "^19",
     "react-dom": "^19",
+    "react-router-dom": "^7.13.0",
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
