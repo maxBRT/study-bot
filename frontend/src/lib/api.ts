@@ -9,6 +9,7 @@ export class ApiError extends Error {
     }
 }
 
+// Make the body more flexible
 type RequestOptions = Omit<RequestInit, "body"> & {
     body?: unknown;
 };
@@ -32,6 +33,10 @@ export async function api<T>(
     if (res.status === 401) {
         window.location.href = "/login";
         throw new ApiError(401, "Unauthorized");
+    }
+
+    if (res.headers.get("content-type")?.includes("text/event-stream")) {
+        return res.body as unknown as T;
     }
 
     const data = res.headers.get("content-type")?.includes("application/json")

@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { signOut } from "@/lib/auth";
-import { Book, Settings, LogOut } from "lucide-react";
+import { Book, Settings, LogOut, Pen } from "lucide-react";
 import {
     Sidebar,
     SidebarContent,
@@ -14,21 +14,17 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Button } from "./ui/button";
+import type { Chat } from "@/types/models/chat";
 
 const navItems = [
     { title: "Settings", icon: Settings, url: "/settings" },
 ];
 
-const chats = [
-    { id: 1, title: "Hello" },
-    { id: 2, title: "Jello" },
-    { id: 3, title: "Test" },
-    { id: 4, title: "Chat" },
-]
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+
+export function AppSidebar({ chats, setChats, ...props }: React.ComponentProps<typeof Sidebar> & { chats: Chat[] } & { setChats: (chats: Chat[]) => void }) {
     const navigate = useNavigate();
-
     async function handleLogout() {
         await signOut();
         navigate("/login");
@@ -58,8 +54,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <SidebarGroupLabel>Conversations</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            {chats.map((chat) => (
-                                <SidebarMenuItem>
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild>
+                                    <Button onClick={() => navigate("/dashboard")}>
+                                        New Conversation <Pen className="size-4" />
+                                    </Button>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                            {chats.map((chat: Chat) => (
+                                <SidebarMenuItem key={chat.id}>
                                     <SidebarMenuButton asChild>
                                         <Link to={`/dashboard/${chat.id}`}>
                                             <p>{chat.title}</p>
