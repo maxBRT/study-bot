@@ -5,7 +5,7 @@ import type { AuthenticatedRequest } from "../types/express";
 export const updateChat = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const { id } = req.params;
-        if (!id) return res.status(400).json({ success: false, message: "Chat ID is required" });
+        if (!id) return res.status(400).json({ success: false, message: "Chat ID is required", data: null });
 
         // Check if the chat exists
         const chat = await prisma.chat.findUnique({
@@ -13,12 +13,12 @@ export const updateChat = async (req: AuthenticatedRequest, res: Response) => {
                 id: id as string,
             },
         });
-        if (!chat) return res.status(404).json({ success: false, message: "Chat not found" });
+        if (!chat) return res.status(404).json({ success: false, message: "Chat not found", data: null });
 
         // Get the updated title from the request body
         const { title } = req.body;
         if (!title) {
-            return res.status(400).json({ success: false, message: "Missing parameters" });
+            return res.status(400).json({ success: false, message: "Missing parameters", data: null });
         }
 
         // Update the chat title
@@ -35,7 +35,7 @@ export const updateChat = async (req: AuthenticatedRequest, res: Response) => {
         return res.status(200).json({
             success: true,
             message: "Chat updated successfully",
-            updatedChat,
+            data: updatedChat,
         });
 
     } catch (error) {
@@ -43,7 +43,7 @@ export const updateChat = async (req: AuthenticatedRequest, res: Response) => {
         return res.status(500).json({
             success: false,
             message: "Internal server error",
-            error,
+            data: null,
         });
     }
 }
@@ -51,7 +51,7 @@ export const updateChat = async (req: AuthenticatedRequest, res: Response) => {
 export const deleteChat = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const { id } = req.params;
-        if (!id) return res.status(400).json({ success: false, message: "ID is required" })
+        if (!id) return res.status(400).json({ success: false, message: "ID is required", data: null })
 
         // Check if the chat exists
         const chat = await prisma.chat.findUnique({
@@ -59,7 +59,7 @@ export const deleteChat = async (req: AuthenticatedRequest, res: Response) => {
                 id: id as string,
             },
         });
-        if (!chat) return res.status(404).json({ success: false, message: "Chat not found" });
+        if (!chat) return res.status(404).json({ success: false, message: "Chat not found", data: null });
 
         // delete the chat
         await prisma.chat.delete({
@@ -70,13 +70,14 @@ export const deleteChat = async (req: AuthenticatedRequest, res: Response) => {
         return res.status(200).json({
             success: true,
             message: "Chat deleted successfully",
+            data: null,
         });
     } catch (error) {
         console.error(error);
         return res.status(500).json({
             success: false,
             message: "Internal server error",
-            error,
+            data: null,
         });
     }
 }
@@ -84,7 +85,7 @@ export const deleteChat = async (req: AuthenticatedRequest, res: Response) => {
 export const getChat = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const { id } = req.params;
-        if (!id) return res.status(400).json({ success: false, message: "ID is required" })
+        if (!id) return res.status(400).json({ success: false, message: "ID is required", data: null })
 
         // Check if the chat exists
         const chat = await prisma.chat.findUnique({
@@ -95,22 +96,21 @@ export const getChat = async (req: AuthenticatedRequest, res: Response) => {
                 messages: true,
             }
         })
-        if (!chat) return res.status(404).json({ success: false, message: "Chat not found" });
+        if (!chat) return res.status(404).json({ success: false, message: "Chat not found", data: null });
 
         // return the chat (With the messages)
         res.status(200).json({
             success: true,
             message: "Chat found",
-            data: { chat }
+            data: chat,
         })
 
     } catch (error) {
-
         console.error(error);
         return res.status(500).json({
             success: false,
             message: "Internal server error",
-            error,
+            data: null,
         });
     }
 }
@@ -129,14 +129,14 @@ export const getChatsForUser = async (req: AuthenticatedRequest, res: Response) 
         return res.status(200).json({
             success: true,
             message: "Chats retrieved successfully",
-            chats,
+            data: chats,
         });
     } catch (error) {
         console.error(error);
         return res.status(500).json({
             success: false,
             message: "Internal server error",
-            error,
+            data: null,
         });
     }
 }
@@ -148,7 +148,7 @@ export const createChat = async (req: AuthenticatedRequest, res: Response) => {
         const { title } = req.body;
         const user = req.user;
         if (!title) {
-            return res.status(400).json({ message: "Missing parameters" });
+            return res.status(400).json({ success: false, message: "Missing parameters", data: null });
         }
 
         // Create a new chat
@@ -157,16 +157,19 @@ export const createChat = async (req: AuthenticatedRequest, res: Response) => {
                 userId: user.id,
                 title,
             },
+            include: {
+                messages: true,
+            },
         });
         if (!chat) {
-            return res.status(500).json({ message: "Internal server error" });
+            return res.status(500).json({ success: false, message: "Internal server error", data: null });
         }
 
         // Return the created chat
         return res.status(201).json({
             success: true,
             message: "Chat created successfully",
-            chat,
+            data: chat,
         });
 
     } catch (error) {
@@ -174,7 +177,7 @@ export const createChat = async (req: AuthenticatedRequest, res: Response) => {
         return res.status(500).json({
             success: false,
             message: "Internal server error",
-            error
+            data: null,
         });
     }
 

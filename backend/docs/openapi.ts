@@ -160,6 +160,7 @@ const openapi: OpenAPIV3.Document = {
             },
             "SuccessResponse": {
                 "type": "object",
+                "required": ["success", "message", "data"],
                 "properties": {
                     "success": {
                         "type": "boolean",
@@ -167,11 +168,16 @@ const openapi: OpenAPIV3.Document = {
                     },
                     "message": {
                         "type": "string"
+                    },
+                    "data": {
+                        "type": "object",
+                        "nullable": true
                     }
                 }
             },
             "ErrorResponse": {
                 "type": "object",
+                "required": ["success", "message", "data"],
                 "properties": {
                     "success": {
                         "type": "boolean",
@@ -180,8 +186,10 @@ const openapi: OpenAPIV3.Document = {
                     "message": {
                         "type": "string"
                     },
-                    "error": {
-                        "type": "object"
+                    "data": {
+                        "type": "object",
+                        "nullable": true,
+                        "example": null
                     }
                 }
             }
@@ -230,20 +238,21 @@ const openapi: OpenAPIV3.Document = {
                         }
                     },
                     "401": {
-                        "description": "Unauthorized - Invalid or missing session"
+                        "description": "Unauthorized - Invalid or missing session",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
                     },
                     "404": {
                         "description": "User not found",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "User not found"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/ErrorResponse"
                                 }
                             }
                         }
@@ -288,20 +297,21 @@ const openapi: OpenAPIV3.Document = {
                         }
                     },
                     "401": {
-                        "description": "Unauthorized - Invalid or missing session"
+                        "description": "Unauthorized - Invalid or missing session",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
                     },
                     "404": {
                         "description": "User not found",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "User not found"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/ErrorResponse"
                                 }
                             }
                         }
@@ -338,6 +348,7 @@ const openapi: OpenAPIV3.Document = {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
+                                    "required": ["success", "message", "data"],
                                     "properties": {
                                         "success": {
                                             "type": "boolean",
@@ -347,7 +358,7 @@ const openapi: OpenAPIV3.Document = {
                                             "type": "string",
                                             "example": "Chats retrieved successfully"
                                         },
-                                        "chats": {
+                                        "data": {
                                             "type": "array",
                                             "items": {
                                                 "$ref": "#/components/schemas/Chat"
@@ -359,7 +370,14 @@ const openapi: OpenAPIV3.Document = {
                         }
                     },
                     "401": {
-                        "description": "Unauthorized - Invalid or missing session"
+                        "description": "Unauthorized - Invalid or missing session",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
                     },
                     "500": {
                         "description": "Internal server error",
@@ -410,6 +428,7 @@ const openapi: OpenAPIV3.Document = {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
+                                    "required": ["success", "message", "data"],
                                     "properties": {
                                         "success": {
                                             "type": "boolean",
@@ -419,7 +438,7 @@ const openapi: OpenAPIV3.Document = {
                                             "type": "string",
                                             "example": "Chat created successfully"
                                         },
-                                        "chat": {
+                                        "data": {
                                             "$ref": "#/components/schemas/Chat"
                                         }
                                     }
@@ -432,19 +451,20 @@ const openapi: OpenAPIV3.Document = {
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Missing parameters"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/ErrorResponse"
                                 }
                             }
                         }
                     },
                     "401": {
-                        "description": "Unauthorized - Invalid or missing session"
+                        "description": "Unauthorized - Invalid or missing session",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
                     },
                     "500": {
                         "description": "Internal server error",
@@ -489,6 +509,7 @@ const openapi: OpenAPIV3.Document = {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
+                                    "required": ["success", "message", "data"],
                                     "properties": {
                                         "success": {
                                             "type": "boolean",
@@ -499,12 +520,7 @@ const openapi: OpenAPIV3.Document = {
                                             "example": "Chat found"
                                         },
                                         "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "chat": {
-                                                    "$ref": "#/components/schemas/Chat"
-                                                }
-                                            }
+                                            "$ref": "#/components/schemas/Chat"
                                         }
                                     }
                                 }
@@ -516,40 +532,27 @@ const openapi: OpenAPIV3.Document = {
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "ID is required"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/ErrorResponse"
                                 }
                             }
                         }
                     },
                     "401": {
-                        "description": "Unauthorized - Invalid or missing session"
+                        "description": "Unauthorized - Invalid or missing session",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
                     },
                     "404": {
                         "description": "Chat not found",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Chat not found"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/ErrorResponse"
                                 }
                             }
                         }
@@ -614,6 +617,7 @@ const openapi: OpenAPIV3.Document = {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
+                                    "required": ["success", "message", "data"],
                                     "properties": {
                                         "success": {
                                             "type": "boolean",
@@ -623,7 +627,7 @@ const openapi: OpenAPIV3.Document = {
                                             "type": "string",
                                             "example": "Chat updated successfully"
                                         },
-                                        "updatedChat": {
+                                        "data": {
                                             "$ref": "#/components/schemas/Chat"
                                         }
                                     }
@@ -636,40 +640,27 @@ const openapi: OpenAPIV3.Document = {
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Missing parameters"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/ErrorResponse"
                                 }
                             }
                         }
                     },
                     "401": {
-                        "description": "Unauthorized - Invalid or missing session"
+                        "description": "Unauthorized - Invalid or missing session",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
                     },
                     "404": {
                         "description": "Chat not found",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Chat not found"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/ErrorResponse"
                                 }
                             }
                         }
@@ -715,6 +706,7 @@ const openapi: OpenAPIV3.Document = {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
+                                    "required": ["success", "message", "data"],
                                     "properties": {
                                         "success": {
                                             "type": "boolean",
@@ -723,6 +715,11 @@ const openapi: OpenAPIV3.Document = {
                                         "message": {
                                             "type": "string",
                                             "example": "Chat deleted successfully"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "nullable": true,
+                                            "example": null
                                         }
                                     }
                                 }
@@ -734,40 +731,27 @@ const openapi: OpenAPIV3.Document = {
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "ID is required"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/ErrorResponse"
                                 }
                             }
                         }
                     },
                     "401": {
-                        "description": "Unauthorized - Invalid or missing session"
+                        "description": "Unauthorized - Invalid or missing session",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
                     },
                     "404": {
                         "description": "Chat not found",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Chat not found"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/ErrorResponse"
                                 }
                             }
                         }
@@ -843,43 +827,27 @@ const openapi: OpenAPIV3.Document = {
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Missing fields in request body"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/ErrorResponse"
                                 }
                             }
                         }
                     },
                     "401": {
-                        "description": "Unauthorized - Invalid or missing session"
+                        "description": "Unauthorized - Invalid or missing session",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
                     },
                     "500": {
                         "description": "Internal server error or OpenAI API error",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Internal server error"
-                                        },
-                                        "error": {
-                                            "type": "string"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/ErrorResponse"
                                 }
                             }
                         }
@@ -906,6 +874,7 @@ const openapi: OpenAPIV3.Document = {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
+                                    "required": ["success", "message", "data"],
                                     "properties": {
                                         "success": {
                                             "type": "boolean",
@@ -915,7 +884,7 @@ const openapi: OpenAPIV3.Document = {
                                             "type": "string",
                                             "example": "Token usages retrieved successfully"
                                         },
-                                        "tokenUsages": {
+                                        "data": {
                                             "type": "array",
                                             "items": {
                                                 "$ref": "#/components/schemas/TokenUsage"
@@ -927,27 +896,21 @@ const openapi: OpenAPIV3.Document = {
                         }
                     },
                     "401": {
-                        "description": "Unauthorized - Invalid or missing session"
+                        "description": "Unauthorized - Invalid or missing session",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
                     },
                     "500": {
                         "description": "Internal server error",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Internal server error"
-                                        },
-                                        "error": {
-                                            "type": "string"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/ErrorResponse"
                                 }
                             }
                         }
@@ -985,6 +948,7 @@ const openapi: OpenAPIV3.Document = {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
+                                    "required": ["success", "message", "data"],
                                     "properties": {
                                         "success": {
                                             "type": "boolean",
@@ -994,7 +958,7 @@ const openapi: OpenAPIV3.Document = {
                                             "type": "string",
                                             "example": "Token usage retrieved successfully"
                                         },
-                                        "tokenUsage": {
+                                        "data": {
                                             "$ref": "#/components/schemas/TokenUsage"
                                         }
                                     }
@@ -1003,24 +967,21 @@ const openapi: OpenAPIV3.Document = {
                         }
                     },
                     "401": {
-                        "description": "Unauthorized - Invalid or missing session"
+                        "description": "Unauthorized - Invalid or missing session",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
                     },
                     "404": {
                         "description": "Token usage not found",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Token usage not found"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/ErrorResponse"
                                 }
                             }
                         }
@@ -1030,20 +991,7 @@ const openapi: OpenAPIV3.Document = {
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Internal server error"
-                                        },
-                                        "error": {
-                                            "type": "string"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/ErrorResponse"
                                 }
                             }
                         }
@@ -1101,60 +1049,42 @@ const openapi: OpenAPIV3.Document = {
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "oneOf": [
-                                        {
-                                            "type": "object",
-                                            "properties": {
-                                                "success": {
-                                                    "type": "boolean",
-                                                    "example": true
-                                                },
-                                                "message": {
-                                                    "type": "string",
-                                                    "example": "Payment processed successfully"
-                                                }
-                                            }
+                                    "type": "object",
+                                    "required": ["success", "message", "data"],
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
                                         },
-                                        {
-                                            "type": "object",
-                                            "properties": {
-                                                "message": {
-                                                    "type": "string",
-                                                    "example": "Received, but user not found."
-                                                }
-                                            }
-                                        },
-                                        {
+                                        "message": {
                                             "type": "string",
-                                            "example": "Received, but payload invalid."
+                                            "example": "Payment processed successfully"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "nullable": true,
+                                            "example": null
                                         }
-                                    ]
+                                    }
                                 }
                             }
                         }
                     },
                     "401": {
-                        "description": "Unauthorized - Invalid or missing session"
+                        "description": "Unauthorized - Invalid or missing session",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
                     },
                     "500": {
                         "description": "Internal server error",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Internal server error"
-                                        },
-                                        "error": {
-                                            "type": "string"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/ErrorResponse"
                                 }
                             }
                         }

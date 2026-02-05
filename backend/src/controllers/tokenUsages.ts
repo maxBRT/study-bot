@@ -13,13 +13,13 @@ export async function listTokenUsages(req: AuthenticatedRequest, res: Response) 
         res.status(200).json({
             success: true,
             message: 'Token usages retrieved successfully',
-            tokenUsages,
+            data: tokenUsages,
         });
     } catch (error: any) {
         res.status(500).json({
             success: false,
             message: 'Internal server error',
-            error: error.message
+            data: null,
         });
     }
 }
@@ -38,19 +38,20 @@ export async function getTokenUsage(req: AuthenticatedRequest, res: Response) {
             res.status(404).json({
                 success: false,
                 message: 'Token usage not found',
+                data: null,
             });
             return;
         }
         res.status(200).json({
             success: true,
             message: 'Token usage retrieved successfully',
-            tokenUsage,
+            data: tokenUsage,
         });
     } catch (error: any) {
         res.status(500).json({
             success: false,
             message: 'Internal server error',
-            error: error.message
+            data: null,
         });
     }
 }

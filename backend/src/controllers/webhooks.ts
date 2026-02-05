@@ -7,13 +7,13 @@ export const processTokenPurchase = async (req: Request, res: Response) => {
         const { metadata } = req.body;
         if (!metadata) {
             console.error(`CRITICAL: Payment missing metadata! Manual fix required.`); // Log the error
-            return res.status(200).send('Received, but payload invalid.'); // Return 200 to avoid retries
+            return res.status(200).json({ success: false, message: 'Received, but payload invalid.', data: null }); // Return 200 to avoid retries
         }
 
         // Process the payment
         if (!metadata.userId || !metadata.tokenAmount) {
             console.error(`CRITICAL: Payment missing metadata! Manual fix required.`); // Log the error
-            return res.status(200).send('Received, but payload invalid.'); // Return 200 to avoid retries
+            return res.status(200).json({ success: false, message: 'Received, but payload invalid.', data: null }); // Return 200 to avoid retries
         }
 
         const user = await prisma.user.findUnique({
@@ -27,7 +27,7 @@ export const processTokenPurchase = async (req: Request, res: Response) => {
         });
         if (!user) {
             console.error(`Orphaned Payment: User ${metadata.userId} not found.`); // Log the error
-            return res.status(200).json({ message: 'Received, but user not found.' }); // Return 200 to avoid retries
+            return res.status(200).json({ success: false, message: 'Received, but user not found.', data: null }); // Return 200 to avoid retries
         }
 
         // Update the user's balance
@@ -52,6 +52,7 @@ export const processTokenPurchase = async (req: Request, res: Response) => {
         return res.status(200).json({
             success: true,
             message: 'Payment processed successfully',
+            data: null,
         });
 
     } catch (error: any) {
@@ -59,7 +60,7 @@ export const processTokenPurchase = async (req: Request, res: Response) => {
         return res.status(500).json({
             success: false,
             message: 'Internal server error',
-            error: error.message
+            data: null,
         });
     }
 }

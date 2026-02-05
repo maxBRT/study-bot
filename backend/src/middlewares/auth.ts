@@ -11,7 +11,7 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
     });
 
     if (!result?.session) {
-        return res.status(401).json({ error: "Unauthorized" });
+        return res.status(401).json({ success: false, message: "Unauthorized", data: null });
     }
 
     // If it is authenticated, get the user data
@@ -25,7 +25,7 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
         return res.status(404).json({
             success: false,
             message: "User not found",
-            error: "User not found"
+            data: null,
         });
     }
 

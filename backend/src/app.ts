@@ -46,14 +46,14 @@ app.use(express.json());
 // This will be removed once the FE is ready
 app.get("/", redirectToEmailVerificationPage);
 
-app.use("/webhooks", webhooksRouter);
+app.use("/api/webhooks", webhooksRouter);
 
 // Authenticated routes
-app.use(authMiddleware);
-app.use("/me", meRouter);
-app.use("/chats", chatRouter);
-app.use("/messages", messagesRouter);
-app.use("/token-usages", tokenUsagesRouter);
+app.use("/api", authMiddleware);
+app.use("/api/me", meRouter);
+app.use("/api/chats", chatRouter);
+app.use("/api/messages", messagesRouter);
+app.use("/api/token-usages", tokenUsagesRouter);
 
 // Healtcheck
 app.get("/health", (req, res) => {

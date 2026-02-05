@@ -61,7 +61,7 @@ export function Dashboard() {
                     ) : error ? (
                         <p className="text-error">{error.message}</p>
                     ) : chat ? (
-                        <Conversation messages={chat.messages} addMessage={addMessage} updateLastMessage={updateLastMessage} />
+                        <Conversation messages={chat.messages} addMessage={addMessage} updateLastMessage={updateLastMessage} chatId={chat.id} />
                     ) : (
                         <div className="flex flex-col items-center justify-center h-full gap-4">
                             <h1 className="text-2xl font-bold">What are we studying?</h1>

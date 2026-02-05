@@ -25,8 +25,9 @@ export async function tokenUsageMiddleware(req: AuthenticatedRequest, res: Respo
     // Check if the has enough tokens
     if (req.user.tokens < requiredTokens) {
         return res.status(403).json({
-            message: `Token are refreshing at ${req.user.tokenRefreshAt}`,
-            error: "Insufficient tokens"
+            success: false,
+            message: `Insufficient tokens. Token are refreshing at ${req.user.tokenRefreshAt}`,
+            data: null,
         });
     }
 

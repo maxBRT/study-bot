@@ -23,6 +23,7 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
             return res.status(400).json({
                 success: false,
                 message: 'Missing fields in request body',
+                data: null,
             });
         }
 
@@ -128,7 +129,7 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
             return res.status(error.status || 500).json({
                 success: false,
                 message: 'OpenAI API error',
-                error: error.message
+                data: null,
             });
         }
 
@@ -136,7 +137,7 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
         return res.status(500).json({
             success: false,
             message: 'Internal server error',
-            error: error.message
+            data: null,
         });
     }
 }

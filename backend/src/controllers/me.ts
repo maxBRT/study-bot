@@ -16,7 +16,7 @@ export async function getStats(req: AuthenticatedRequest, res: Response) {
             },
         });
         if (!user) {
-            res.status(404).json({ message: "User not found" });
+            res.status(404).json({ success: false, message: "User not found", data: null });
             return;
         }
         const data: Record<string, any> = {};
@@ -86,7 +86,7 @@ export async function getStats(req: AuthenticatedRequest, res: Response) {
         res.status(500).json({
             success: false,
             message: "Internal server error",
-            data: error,
+            data: null,
         });
     }
 }
@@ -104,7 +104,7 @@ export async function getMe(req: AuthenticatedRequest, res: Response) {
         },
     });
     if (!user) {
-        res.status(404).json({ message: "User not found" });
+        res.status(404).json({ success: false, message: "User not found", data: null });
         return;
     }
 
