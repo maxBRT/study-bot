@@ -55,6 +55,11 @@ app.use("/chats", chatRouter);
 app.use("/messages", messagesRouter);
 app.use("/token-usages", tokenUsagesRouter);
 
+// Healtcheck
+app.get("/health", (req, res) => {
+    res.sendStatus(200);
+});
+
 // Start the server
 app.listen(process.env.PORT || 3000, () => {
     console.log("Server is running on port 3000");
