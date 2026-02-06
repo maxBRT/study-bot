@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { signOut } from "@/lib/auth";
-import { Book, Settings, LogOut, Pen } from "lucide-react";
+import { Book, Settings, LogOut, Pen, Trash2 } from "lucide-react";
 import {
     Sidebar,
     SidebarContent,
@@ -11,20 +11,37 @@ import {
     SidebarGroupLabel,
     SidebarHeader,
     SidebarMenu,
+    SidebarMenuAction,
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Button } from "./ui/button";
 import type { Chat } from "@/types/models/chat";
+import { api } from "@/lib/api";
+import type { ApiResponse } from "@/types/api";
 
 const navItems = [
-    { title: "Settings", icon: Settings, url: "/settings" },
+    { title: "Profile", icon: Settings, url: "/dashboard" },
 ];
 
 
 
 export function AppSidebar({ chats, setChats, ...props }: React.ComponentProps<typeof Sidebar> & { chats: Chat[] } & { setChats: (chats: Chat[]) => void }) {
     const navigate = useNavigate();
+
+    const deleteChat = async (chatId: string) => {
+        const res = await api<ApiResponse<null>>(`/chats/${chatId}`, {
+            method: "DELETE"
+        })
+        if (res.success) {
+            setChats(chats.filter((c: Chat) => {
+                return c.id !== chatId;
+            }))
+            navigate('/dashboard')
+        }
+    }
+
+
     async function handleLogout() {
         await signOut();
         navigate("/login");
@@ -68,6 +85,13 @@ export function AppSidebar({ chats, setChats, ...props }: React.ComponentProps<t
                                             <p>{chat.title}</p>
                                         </Link>
                                     </SidebarMenuButton>
+                                    <SidebarMenuAction
+                                        showOnHover
+                                        className="text-destructive hover:text-destructive/80"
+                                        onClick={() => { deleteChat(chat.id) }}
+                                    >
+                                        <Trash2 className="size-3.5" />
+                                    </SidebarMenuAction>
                                 </SidebarMenuItem>
                             ))}
                         </SidebarMenu>

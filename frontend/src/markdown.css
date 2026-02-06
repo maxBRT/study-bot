@@ -1,0 +1,100 @@
+.markdown-container {
+    line-height: 1.625;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    max-width: 100%;
+}
+
+.markdown-container h1,
+.markdown-container h2,
+.markdown-container h3 {
+    color: #111827;
+    font-weight: 700;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    line-height: 1.25;
+}
+
+.markdown-container h1 {
+    font-size: 2.25rem;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+}
+
+.markdown-container h2 {
+    font-size: 1.5rem;
+}
+
+.markdown-container h3 {
+    font-size: 1.25rem;
+}
+
+.markdown-container p {
+    margin-bottom: 1.25rem;
+}
+
+.markdown-container strong {
+    color: #111827;
+    font-weight: 600;
+}
+
+.markdown-container ul,
+.markdown-container ol {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+}
+
+.markdown-container li {
+    margin-bottom: 0.5rem;
+}
+
+.markdown-container code {
+    font-family: "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+    font-size: 0.875em;
+    background-color: #f3f4f6;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    color: #eb5757;
+}
+
+.markdown-container pre {
+    background-color: #1f2937;
+    color: #f9fafb;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-bottom: 1.25rem;
+}
+
+.markdown-container pre code {
+    background-color: transparent;
+    padding: 0;
+    color: inherit;
+    font-size: 0.9rem;
+}
+
+.markdown-container blockquote {
+    border-left: 4px solid #e5e7eb;
+    padding-left: 1rem;
+    font-style: italic;
+    color: #6b7280;
+    margin: 1.5rem 0;
+}
+
+.markdown-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.25rem;
+}
+
+.markdown-container th {
+    background-color: #f9fafb;
+    text-align: left;
+    font-weight: 600;
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+}
+
+.markdown-container td {
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+}

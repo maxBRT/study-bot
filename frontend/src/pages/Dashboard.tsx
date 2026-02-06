@@ -14,12 +14,15 @@ import { Spinner } from "@/components/ui/spinner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useUserChats } from "@/hooks/use-user-chats";
+import { useMe } from "@/hooks/use-me";
+import { Plus } from "lucide-react";
 
 export function Dashboard() {
     const { id } = useParams<{ id?: string }>();
     const { data: session } = useSession();
     const navigate = useNavigate();
-    const { chat, isLoading, error, addMessage, updateLastMessage, createChat } = useCurrentChat(id);
+    const { user, error: userError, refetch: refetchUser } = useMe();
+    const { chat, isLoading, error: chatError, addMessage, updateLastMessage, createChat } = useCurrentChat(id);
     const { chats, setChats } = useUserChats();
     const [title, setTitle] = useState("");
     const [isCreating, setIsCreating] = useState(false);
@@ -53,15 +56,23 @@ export function Dashboard() {
                 <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
                     <SidebarTrigger className="-ml-1" />
                     <Separator orientation="vertical" className="mr-2 h-4" />
-                    <span className="font-medium">Dashboard</span>
+                    <div className="flex flex-row items-center justify-between w-full">
+                        <span className="font-medium">Dashboard</span>
+                        <div className="flex flex-row gap-2 items-center">
+                            <p>You have {user?.tokens} tokens left</p>
+                            <Button variant="outline" >
+                                <Plus />
+                            </Button>
+                        </div>
+                    </div>
                 </header>
                 <main className="flex-1 overflow-hidden">
                     {isLoading ? (
                         <Spinner />
-                    ) : error ? (
-                        <p className="text-error">{error.message}</p>
+                    ) : chatError ? (
+                        <p className="text-error">{chatError.message}</p>
                     ) : chat ? (
-                        <Conversation messages={chat.messages} addMessage={addMessage} updateLastMessage={updateLastMessage} chatId={chat.id} />
+                        <Conversation messages={chat.messages} addMessage={addMessage} updateLastMessage={updateLastMessage} chatId={chat.id} onMessageComplete={refetchUser} />
                     ) : (
                         <div className="flex flex-col items-center justify-center h-full gap-4">
                             <h1 className="text-2xl font-bold">What are we studying?</h1>

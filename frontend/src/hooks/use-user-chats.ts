@@ -22,7 +22,7 @@ export function useUserChats() {
             }
         }
         fetchChats();
-    }, [chats]);
+    }, []);
 
     return { chats, setChats, isLoading, error };
 }

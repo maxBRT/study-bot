@@ -13,9 +13,10 @@ type ConversationProps = {
     addMessage: (message: Message) => void;
     updateLastMessage: (chunk: string) => void;
     chatId: string;
+    onMessageComplete?: () => void;
 };
 
-export function Conversation({ messages, addMessage, updateLastMessage, chatId }: ConversationProps) {
+export function Conversation({ messages, addMessage, updateLastMessage, chatId, onMessageComplete }: ConversationProps) {
     const [message, setMessage] = useState("");
     const [isSending, setIsSending] = useState(false);
     const [modelName, setModelName] = useState("gpt-3.5-turbo");
@@ -77,6 +78,7 @@ export function Conversation({ messages, addMessage, updateLastMessage, chatId }
             console.error(err);
         } finally {
             setIsSending(false);
+            onMessageComplete?.();
         }
     }
 
