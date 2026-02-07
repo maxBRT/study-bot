@@ -79,12 +79,13 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
         })) as OpenAI.Chat.ChatCompletionMessageParam[];
 
         // Send the message to OpenAI
+        // Newer models (gpt-4o, gpt-5.x, o-series) require max_completion_tokens and don't support custom temperature
+        const isLegacyModel = modelName.startsWith("gpt-3.5") || modelName === "gpt-4";
         const stream = await client.chat.completions.create({
             model: modelName,
             messages: [systemPrompt, ...formattedMessages],
-            max_tokens: 1000,
+            ...(isLegacyModel ? { max_tokens: 1000, temperature: 0.5 } : { max_completion_tokens: 1000 }),
             stream: true,
-            temperature: 0.5,
         });
 
         let content = '';
@@ -128,7 +129,7 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
         if (error instanceof OpenAI.APIError) {
             return res.status(error.status || 500).json({
                 success: false,
-                message: 'OpenAI API error',
+                message: error.message,
                 data: null,
             });
         }
@@ -136,7 +137,7 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
         // general errors
         return res.status(500).json({
             success: false,
-            message: 'Internal server error',
+            message: error.message || 'Internal server error',
             data: null,
         });
     }
@@ -152,7 +153,13 @@ function createOpenAIClient() {
 }
 
 function countStringTokens(input: string, model: string): number {
-    const encoding = encoding_for_model(model as TiktokenModel);
+    let encoding;
+    try {
+        encoding = encoding_for_model(model as TiktokenModel);
+    } catch {
+        // Fallback for models not yet supported by tiktoken
+        encoding = encoding_for_model("gpt-4" as TiktokenModel);
+    }
     const tokens = encoding.encode(input);
     const count = tokens.length;
     encoding.free();

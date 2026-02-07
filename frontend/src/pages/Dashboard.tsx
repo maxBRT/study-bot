@@ -16,16 +16,19 @@ import { Button } from "@/components/ui/button";
 import { useUserChats } from "@/hooks/use-user-chats";
 import { useMe } from "@/hooks/use-me";
 import { Plus } from "lucide-react";
+import { api, ApiError } from "@/lib/api";
+import type { ApiResponse } from "@/types/api";
 
 export function Dashboard() {
-    const { id } = useParams<{ id?: string }>();
-    const { data: session } = useSession();
+    const { id } = useParams<{ id?: string }>(); const { data: session } = useSession();
     const navigate = useNavigate();
     const { user, error: userError, refetch: refetchUser } = useMe();
     const { chat, isLoading, error: chatError, addMessage, updateLastMessage, createChat } = useCurrentChat(id);
     const { chats, setChats } = useUserChats();
     const [title, setTitle] = useState("");
     const [isCreating, setIsCreating] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
+
 
     useEffect(() => {
         if (chat && session?.user && chat.userId !== session.user.id) {
@@ -45,9 +48,26 @@ export function Dashboard() {
         }
     };
 
+    const handlePurchaseToken = async () => {
+        try {
+            const res = await api<ApiResponse<null>>("/webhooks/stripe", {
+                method: "POST",
+                body: {
+                    metadata: {
+                        userId: user?.id,
+                        tokenAmount: 100
+                    }
+                }
+            })
+            if (res.success) {
+                refetchUser();
+            }
+        } catch (err) {
+            setError(err as ApiError)
+        }
+    }
 
-
-
+    const displayError = error || userError || chatError;
 
     return (
         <SidebarProvider>
@@ -60,7 +80,7 @@ export function Dashboard() {
                         <span className="font-medium">Dashboard</span>
                         <div className="flex flex-row gap-2 items-center">
                             <p>You have {user?.tokens} tokens left</p>
-                            <Button variant="outline" >
+                            <Button variant="outline" onClick={handlePurchaseToken} >
                                 <Plus />
                             </Button>
                         </div>
@@ -69,8 +89,8 @@ export function Dashboard() {
                 <main className="flex-1 overflow-hidden">
                     {isLoading ? (
                         <Spinner />
-                    ) : chatError ? (
-                        <p className="text-error">{chatError.message}</p>
+                    ) : displayError ? (
+                        <p className="text-error">{displayError.message}</p>
                     ) : chat ? (
                         <Conversation messages={chat.messages} addMessage={addMessage} updateLastMessage={updateLastMessage} chatId={chat.id} onMessageComplete={refetchUser} />
                     ) : (

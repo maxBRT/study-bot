@@ -13,12 +13,11 @@ type ConversationProps = {
     addMessage: (message: Message) => void;
     updateLastMessage: (chunk: string) => void;
     chatId: string;
-    onMessageComplete?: () => void;
+    onMessageComplete: () => void;
 };
 
 export function Conversation({ messages, addMessage, updateLastMessage, chatId, onMessageComplete }: ConversationProps) {
     const [message, setMessage] = useState("");
-    const [isSending, setIsSending] = useState(false);
     const [modelName, setModelName] = useState("gpt-3.5-turbo");
     const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -28,17 +27,15 @@ export function Conversation({ messages, addMessage, updateLastMessage, chatId, 
 
     async function handleSend() {
         if (!message.trim()) return;
-        setIsSending(true);
         try {
             // Add the user's message to the chat
             addMessage({
-                id: Date.now().toString(),
+                id: (Date.now() + 1).toString(),
                 content: message,
                 sender: "user",
                 modelName: modelName,
                 chatId: chatId,
             } as Message);
-            setMessage("");
 
             // Add the assistant's message to receive the stream
             addMessage({
@@ -60,6 +57,7 @@ export function Conversation({ messages, addMessage, updateLastMessage, chatId, 
                     chatId: chatId,
                 },
             })
+            setMessage("");
 
             const reader = stream.getReader();
             const decoder = new TextDecoder();
@@ -75,10 +73,10 @@ export function Conversation({ messages, addMessage, updateLastMessage, chatId, 
             }
 
         } catch (err) {
-            console.error(err);
+            const errorMessage = err instanceof Error ? err.message : "Something went wrong. Please try again.";
+            updateLastMessage(`Error: ${errorMessage}`);
         } finally {
-            setIsSending(false);
-            onMessageComplete?.();
+            onMessageComplete();
         }
     }
 
@@ -103,7 +101,8 @@ export function Conversation({ messages, addMessage, updateLastMessage, chatId, 
                                 <SelectLabel>Models</SelectLabel>
                                 <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
                                 <SelectItem value="gpt-4">GPT-4</SelectItem>
-                                <SelectItem value="gpt-5.2">GPT-5.2</SelectItem>
+                                <SelectItem value="gpt-5.2">GPT-5</SelectItem>
+                                <SelectItem value="gpt-5-nano">GPT-5 nano</SelectItem>
                             </SelectGroup>
                         </SelectContent>
                     </Select>
@@ -111,6 +110,7 @@ export function Conversation({ messages, addMessage, updateLastMessage, chatId, 
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         type="text"
+                        onKeyDown={(e) => e.key === "Enter" && handleSend()}
                         placeholder="Type your message here..." />
                     <Button onClick={handleSend}>Send</Button>
                 </Field>
