@@ -21,7 +21,7 @@ import { api } from "@/lib/api";
 import type { ApiResponse } from "@/types/api";
 
 const navItems = [
-    { title: "Profile", icon: Settings, url: "/dashboard" },
+    { title: "Profile", icon: Settings, url: "/profile" },
 ];
 
 

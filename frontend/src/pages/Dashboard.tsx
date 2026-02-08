@@ -1,117 +1,38 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useOutletContext } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useSession } from "@/lib/auth";
-import { AppSidebar } from "@/components/app-sidebar";
-import {
-    SidebarInset,
-    SidebarProvider,
-    SidebarTrigger,
-} from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
 import { Conversation } from "@/components/conversation";
 import { useCurrentChat } from "@/hooks/use-current-chat";
 import { Spinner } from "@/components/ui/spinner";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useUserChats } from "@/hooks/use-user-chats";
-import { useMe } from "@/hooks/use-me";
-import { Plus } from "lucide-react";
-import { api, ApiError } from "@/lib/api";
-import type { ApiResponse } from "@/types/api";
+import type { DashboardOutletContext } from "@/components/dashboard-layout";
+import { CreateChat } from "@/components/create-chat";
 
 export function Dashboard() {
-    const { id } = useParams<{ id?: string }>(); const { data: session } = useSession();
+    const { id } = useParams<{ id?: string }>();
+    const { data: session } = useSession();
     const navigate = useNavigate();
-    const { user, error: userError, refetch: refetchUser } = useMe();
+    const { chats, setChats, refetchUser } = useOutletContext<DashboardOutletContext>();
     const { chat, isLoading, error: chatError, addMessage, updateLastMessage, createChat } = useCurrentChat(id);
-    const { chats, setChats } = useUserChats();
-    const [title, setTitle] = useState("");
-    const [isCreating, setIsCreating] = useState(false);
-    const [error, setError] = useState<Error | null>(null);
-
-
+    
     useEffect(() => {
         if (chat && session?.user && chat.userId !== session.user.id) {
             navigate("/login");
         }
     }, [chat, session, navigate]);
 
-    const handleCreateChat = async () => {
-        if (!title.trim()) return;
-        setIsCreating(true);
-        try {
-            const newChat = await createChat(title);
-            setChats([...chats, newChat]);
-            navigate(`/dashboard/${newChat.id}`);
-        } finally {
-            setIsCreating(false);
-        }
-    };
-
-    const handlePurchaseToken = async () => {
-        try {
-            const res = await api<ApiResponse<null>>("/webhooks/stripe", {
-                method: "POST",
-                body: {
-                    metadata: {
-                        userId: user?.id,
-                        tokenAmount: 100
-                    }
-                }
-            })
-            if (res.success) {
-                refetchUser();
-            }
-        } catch (err) {
-            setError(err as ApiError)
-        }
-    }
-
-    const displayError = error || userError || chatError;
+   
 
     return (
-        <SidebarProvider>
-            <AppSidebar chats={chats} setChats={setChats} />
-            <SidebarInset className="flex flex-col h-screen overflow-hidden">
-                <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-                    <SidebarTrigger className="-ml-1" />
-                    <Separator orientation="vertical" className="mr-2 h-4" />
-                    <div className="flex flex-row items-center justify-between w-full">
-                        <span className="font-medium">Dashboard</span>
-                        <div className="flex flex-row gap-2 items-center">
-                            <p>You have {user?.tokens} tokens left</p>
-                            <Button variant="outline" onClick={handlePurchaseToken} >
-                                <Plus />
-                            </Button>
-                        </div>
-                    </div>
-                </header>
-                <main className="flex-1 overflow-hidden">
-                    {isLoading ? (
-                        <Spinner />
-                    ) : displayError ? (
-                        <p className="text-error">{displayError.message}</p>
-                    ) : chat ? (
-                        <Conversation messages={chat.messages} addMessage={addMessage} updateLastMessage={updateLastMessage} chatId={chat.id} onMessageComplete={refetchUser} />
-                    ) : (
-                        <div className="flex flex-col items-center justify-center h-full gap-4">
-                            <h1 className="text-2xl font-bold">What are we studying?</h1>
-                            <div className="flex gap-2 w-full max-w-md">
-                                <Input
-                                    type="text"
-                                    placeholder="Enter a title..."
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
-                                    onKeyDown={(e) => e.key === "Enter" && handleCreateChat()}
-                                />
-                                <Button onClick={handleCreateChat} disabled={isCreating}>
-                                    {isCreating ? "Creating..." : "Start"}
-                                </Button>
-                            </div>
-                        </div>
-                    )}
-                </main>
-            </SidebarInset>
-        </SidebarProvider>
+        <main className="flex-1 overflow-hidden">
+            {isLoading ? (
+                <Spinner />
+            ) : chatError ? (
+                <p className="text-error">{chatError.message}</p>
+            ) : chat ? (
+                <Conversation messages={chat.messages} addMessage={addMessage} updateLastMessage={updateLastMessage} chatId={chat.id} onMessageComplete={refetchUser} />
+            ) : (
+                <CreateChat chats={chats} setChats={setChats} createChat={createChat} />
+            )}
+        </main>
     );
 }

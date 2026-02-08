@@ -5,8 +5,9 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import type { Message } from "@/types/models/message";
 import { useState, useRef, useEffect } from "react";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./ui/select";
+import { set } from "zod";
 
 type ConversationProps = {
     messages: Message[];
@@ -28,10 +29,12 @@ export function Conversation({ messages, addMessage, updateLastMessage, chatId, 
     async function handleSend() {
         if (!message.trim()) return;
         try {
+            const msg = message.trim();
+            setMessage("");
             // Add the user's message to the chat
             addMessage({
                 id: (Date.now() + 1).toString(),
-                content: message,
+                content: msg,
                 sender: "user",
                 modelName: modelName,
                 chatId: chatId,
@@ -52,12 +55,11 @@ export function Conversation({ messages, addMessage, updateLastMessage, chatId, 
                     "Content-Type": "application/json",
                 },
                 body: {
-                    input: message,
+                    input: msg,
                     modelName: modelName,
                     chatId: chatId,
                 },
             })
-            setMessage("");
 
             const reader = stream.getReader();
             const decoder = new TextDecoder();
@@ -74,9 +76,14 @@ export function Conversation({ messages, addMessage, updateLastMessage, chatId, 
 
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : "Something went wrong. Please try again.";
-            updateLastMessage(`Error: ${errorMessage}`);
+            console.error(err);
+            if (err instanceof ApiError) {
+                err.status === 403 && updateLastMessage(`Oops! You've reached your tiket limit.`);
+            } else {
+                updateLastMessage(`Error: ${errorMessage}`);
+            }
         } finally {
-            onMessageComplete();
+            setTimeout(onMessageComplete, 500);
         }
     }
 

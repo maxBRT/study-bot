@@ -60,6 +60,7 @@ export function Login() {
                     alt="Study"
                     className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
                 />
+                <div className="absolute inset-0 bg-black/60"></div>
             </div>
         </div>
     );
