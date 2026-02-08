@@ -17,7 +17,7 @@ services:
         timeout: 5s
         retries: 5
 
-    study-bot-backend:
+    backend:
       build:
         context: ./backend
         dockerfile: Dockerfile
@@ -30,6 +30,22 @@ services:
         - "3000:3000"
       healthcheck:
         test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+        interval: 10s
+        timeout: 5s
+        retries: 3
+        start_period: 10s
+    
+    frontend:
+      build:
+        context: ./frontend
+        dockerfile: Dockerfile
+      depends_on:
+        backend:
+          condition: service_healthy
+      ports:
+        - "4321:4321"
+      healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:4321/health"]
         interval: 10s
         timeout: 5s
         retries: 3

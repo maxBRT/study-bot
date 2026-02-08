@@ -4,6 +4,7 @@ import index from "./index.html";
 const API_URL = Bun.env.API_URL || "http://localhost:3000";
 
 const server = serve({
+    hostname: "0.0.0.0",
     port: 4321,
     routes: {
         // Proxy API requests to backend
@@ -16,7 +17,9 @@ const server = serve({
                 body: req.body,
             });
         },
-
+        "/health": async (req) => {
+            return new Response("OK");
+        },
         // Serve index.html for all unmatched routes
         "/*": index,
     },
