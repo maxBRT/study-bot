@@ -18,6 +18,7 @@ export function useMe(): UseMeReturn {
             const res = await api<ApiResponse<User>>("/me")
             const user = res.data
             setUser(user)
+            setError(null)
         } catch (err) {
             setError(err as ApiError)
         }

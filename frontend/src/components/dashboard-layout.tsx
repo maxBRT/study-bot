@@ -1,8 +1,7 @@
 import { Outlet } from "react-router-dom";
-import { useState } from "react";
 import { useUserChats } from "@/hooks/use-user-chats";
 import { useMe } from "@/hooks/use-me";
-import { api, ApiError } from "@/lib/api";
+import { api } from "@/lib/api";
 import type { ApiResponse } from "@/types/api";
 import type { Chat } from "@/types/models/chat";
 import type { User } from "@/types/models/user";
@@ -18,7 +17,6 @@ export type DashboardOutletContext = {
 export function DashboardLayout() {
     const { chats, setChats } = useUserChats();
     const { user, error: userError, refetch: refetchUser } = useMe();
-    const [error, setError] = useState<Error | null>(null);
 
     const handlePurchaseToken = async () => {
         try {
@@ -35,7 +33,7 @@ export function DashboardLayout() {
                 refetchUser();
             }
         } catch (err) {
-            setError(err as ApiError);
+            console.error("Token purchase failed:", err);
         }
     };
 
@@ -44,6 +42,7 @@ export function DashboardLayout() {
             chats={chats}
             setChats={setChats}
             user={user}
+            error={userError}
             onPurchaseToken={handlePurchaseToken}
         >
             <Outlet context={{ chats, setChats, user, refetchUser } as DashboardOutletContext} />

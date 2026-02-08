@@ -7,7 +7,7 @@ import type { Chat } from "@/types/models/chat";
 type CreateChatProps = {
     chats: Chat[];
     setChats: (chats: Chat[]) => void;
-    createChat: (title: string) => Promise<Chat>;
+    createChat: (title: string) => Promise<Chat | null>;
 };
 
 export function CreateChat({ chats, setChats, createChat }: CreateChatProps) {
@@ -20,6 +20,7 @@ export function CreateChat({ chats, setChats, createChat }: CreateChatProps) {
         setIsCreating(true);
         try {
             const newChat = await createChat(title);
+            if (!newChat) return;
             setChats([...chats, newChat]);
             navigate(`/dashboard/${newChat.id}`);
         } finally {

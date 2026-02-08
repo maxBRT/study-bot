@@ -3,18 +3,17 @@ import type { ApiResponse } from "@/types/api";
 import type { Chat } from "@/types/models/chat";
 import type { Message } from "@/types/models/message";
 import React, { useEffect } from "react";
+import { fi } from "zod/locales";
 
 type ChatState = {
+    chat: Chat | null;
+    isLoading: boolean;
+    error: Error | null;
     addMessage: (message: Message) => void;
     updateLastMessage: (chunk: string) => void;
-    createChat: (title: string) => Promise<Chat>;
+    createChat: (title: string) => Promise<Chat | null>;
     setChat: (chat: Chat) => void;
-} & (
-        | { chat: null; isLoading: false; error: null }
-        | { chat: null; isLoading: true; error: null }
-        | { chat: null; isLoading: false; error: Error }
-        | { chat: Chat; isLoading: false; error: null }
-    );
+};
 
 export function useCurrentChat(chatId: string | undefined): ChatState {
     const [chat, setChat] = React.useState<Chat | null>(null);
@@ -56,9 +55,10 @@ export function useCurrentChat(chatId: string | undefined): ChatState {
             return res.data;
         } catch (err) {
             setError(err as ApiError);
+            return null;
+        } finally {
             setIsLoading(false);
         }
-
     };
 
     useEffect(() => {
@@ -84,6 +84,6 @@ export function useCurrentChat(chatId: string | undefined): ChatState {
         fetchChat();
     }, [chatId]);
 
-    return { chat, isLoading, error, addMessage, updateLastMessage, createChat, setChat } as ChatState;
+    return { chat, isLoading, error, addMessage, updateLastMessage, createChat, setChat };
 }
 

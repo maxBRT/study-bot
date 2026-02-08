@@ -12,10 +12,11 @@ type SidebarLayoutProps = {
     chats: Chat[];
     setChats: (chats: Chat[]) => void;
     user: User | null;
+    error: Error | null;
     onPurchaseToken: () => void;
 };
 
-export function SidebarLayout({ children, chats, setChats, user, onPurchaseToken }: SidebarLayoutProps) {
+export function SidebarLayout({ children, chats, setChats, user, error, onPurchaseToken }: SidebarLayoutProps) {
     return (
         <SidebarProvider>
             <AppSidebar chats={chats} setChats={setChats} />
@@ -27,7 +28,11 @@ export function SidebarLayout({ children, chats, setChats, user, onPurchaseToken
                         <span className="font-medium">Dashboard</span>
                         
                         <div className="flex flex-row gap-6 items-center">
-                            <p>You have {user?.tokens} tokens left</p>
+                            {error ? (
+                                <p className="text-sm text-destructive">{error.message}</p>
+                            ) : (
+                                <p>You have {user?.tokens} tokens left</p>
+                            )}
                             <Button variant="outline" onClick={onPurchaseToken}>
                                 <Plus />
                             </Button>

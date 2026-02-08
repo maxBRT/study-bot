@@ -7,7 +7,6 @@ import type { Message } from "@/types/models/message";
 import { useState, useRef, useEffect } from "react";
 import { api, ApiError } from "@/lib/api";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./ui/select";
-import { set } from "zod";
 
 type ConversationProps = {
     messages: Message[];
@@ -20,6 +19,7 @@ type ConversationProps = {
 export function Conversation({ messages, addMessage, updateLastMessage, chatId, onMessageComplete }: ConversationProps) {
     const [message, setMessage] = useState("");
     const [modelName, setModelName] = useState("gpt-3.5-turbo");
+    const [isSending, setIsSending] = useState(false);
     const bottomRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -27,7 +27,8 @@ export function Conversation({ messages, addMessage, updateLastMessage, chatId, 
     }, [messages]);
 
     async function handleSend() {
-        if (!message.trim()) return;
+        if (!message.trim() || isSending) return;
+        setIsSending(true);
         try {
             const msg = message.trim();
             setMessage("");
@@ -78,11 +79,12 @@ export function Conversation({ messages, addMessage, updateLastMessage, chatId, 
             const errorMessage = err instanceof Error ? err.message : "Something went wrong. Please try again.";
             console.error(err);
             if (err instanceof ApiError) {
-                err.status === 403 && updateLastMessage(`Oops! You've reached your tiket limit.`);
+                err.status === 403 && updateLastMessage(`Oops! You've reached your token limit.`);
             } else {
                 updateLastMessage(`Error: ${errorMessage}`);
             }
         } finally {
+            setIsSending(false);
             setTimeout(onMessageComplete, 500);
         }
     }
@@ -118,8 +120,11 @@ export function Conversation({ messages, addMessage, updateLastMessage, chatId, 
                         onChange={(e) => setMessage(e.target.value)}
                         type="text"
                         onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                        placeholder="Type your message here..." />
-                    <Button onClick={handleSend}>Send</Button>
+                        placeholder="Type your message here..."
+                        disabled={isSending} />
+                    <Button onClick={handleSend} disabled={isSending}>
+                        {isSending ? "Sending..." : "Send"}
+                    </Button>
                 </Field>
             </div>
         </div >

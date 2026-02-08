@@ -32,7 +32,7 @@ function StatCard({ title, value, description, icon: Icon }: {
 
 export function Profile() {
     const { data: session } = useSession();
-    const { userStats, loading, error } = useUserStats();
+    const { userStats, isLoading, error } = useUserStats();
 
     return (
         <div className="flex flex-col h-full overflow-auto">
@@ -42,7 +42,7 @@ export function Profile() {
                     <p className="text-muted-foreground">Welcome back, {session?.user.name}</p>
                 </div>
 
-                {loading ? (
+                {isLoading ? (
                     <Spinner />
                 ) : error ? (
                     <p className="text-destructive">Error: {error.message}</p>

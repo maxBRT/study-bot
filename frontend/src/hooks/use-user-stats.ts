@@ -5,14 +5,14 @@ import { useEffect, useState } from "react";
 
 type UserStatsReturn = {
     userStats: UserStats | null;
-    loading: boolean;
+    isLoading: boolean;
     error: Error | null;
 }
 
 
 export function useUserStats(): UserStatsReturn {
     const [userStats, setUserStats] = useState<UserStats | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
     
     useEffect(() => {
@@ -32,7 +32,7 @@ export function useUserStats(): UserStatsReturn {
 
     return {
         userStats,
-        loading,
+        isLoading,
         error,
     } as UserStatsReturn;
 }
