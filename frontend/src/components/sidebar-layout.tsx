@@ -5,6 +5,7 @@ import { AppSidebar } from "./app-sidebar";
 import { Separator } from "./ui/separator";
 import type { Chat } from "@/types/models/chat";
 import type { User } from "@/types/models/user";
+import { ModeToggle } from "./theme-toggle";
 
 type SidebarLayoutProps = {
     children: React.ReactNode;
@@ -24,12 +25,14 @@ export function SidebarLayout({ children, chats, setChats, user, onPurchaseToken
                     <Separator orientation="vertical" className="mr-2 h-4" />
                     <div className="flex flex-row items-center justify-between w-full">
                         <span className="font-medium">Dashboard</span>
-                        <div className="flex flex-row gap-2 items-center">
+                        
+                        <div className="flex flex-row gap-6 items-center">
                             <p>You have {user?.tokens} tokens left</p>
                             <Button variant="outline" onClick={onPurchaseToken}>
                                 <Plus />
                             </Button>
                         </div>
+                        <ModeToggle />
                     </div>
                 </header>
                 {children}

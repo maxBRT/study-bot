@@ -7,9 +7,11 @@ import { NotFound } from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { Profile } from "./pages/Profile";
 import { DashboardLayout } from "./components/dashboard-layout";
+import { ThemeProvider } from "./components/theme-provider";
 
 export function App() {
     return (
+        <ThemeProvider>
         <Routes>
             {/* Public routes */}
             <Route path="/" element={<Home />} />
@@ -26,6 +28,7 @@ export function App() {
 
             <Route path="*" element={<NotFound />} />
         </Routes>
+        </ThemeProvider>
     );
 }
 

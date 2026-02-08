@@ -19,6 +19,7 @@ import { Button } from "./ui/button";
 import type { Chat } from "@/types/models/chat";
 import { api } from "@/lib/api";
 import type { ApiResponse } from "@/types/api";
+import { ModeToggle } from "./theme-toggle";
 
 const navItems = [
     { title: "Profile", icon: Settings, url: "/profile" },
