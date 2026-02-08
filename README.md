@@ -1,7 +1,5 @@
 # Study Bot
 
-**Lien GitHub :** https://github.com/maxBRT/study-bot
-
 Study Bot est un compagnon d'étude propulsé par l'IA. L'application permet aux utilisateurs de poser des questions, obtenir des explications et maîtriser n'importe quel sujet à travers des conversations interactives avec différents modèles d'IA (GPT-3.5 Turbo, GPT-4, GPT-5).
 
 ## Technologies utilisées
@@ -38,6 +36,7 @@ docker compose up --build
 - [Bun](https://bun.sh/) installé
 - [Node.js](https://nodejs.org/) installé (pour le backend)
 - PostgreSQL en cours d'exécution
+> Note : NEON à été retirer du project pour prioriser la contenerisation. Plus de detail dans le rapport technique.
 - Clés API OpenAI
 
 ### Installation locale
@@ -76,8 +75,19 @@ Voir les instructions dans le fichier (README)[https://github.com/maxBRT/study-b
 ## Captures d'écran
 
 1. Page d'accueil / Landing page
-2. Dashboard avec une conversation
+
+<img width="1904" height="918" alt="image" src="https://github.com/user-attachments/assets/6b7cb192-866c-4775-a76b-fb02d1c536a4" />
+<img width="1903" height="916" alt="image" src="https://github.com/user-attachments/assets/8eb6879e-a3b9-4824-8b7f-d32eec3fbacd" />
+<img width="1899" height="914" alt="image" src="https://github.com/user-attachments/assets/8017cedd-4320-4aaa-8f76-da11ea48d2a0" />
+
+3. Dashboard avec une conversation
+
+<img width="1905" height="915" alt="image" src="https://github.com/user-attachments/assets/7154e1cb-9725-4de4-b5e7-b341a2e862ac" />
+
 3. Page de profil avec les statistiques
+
+<img width="1905" height="916" alt="image" src="https://github.com/user-attachments/assets/8535aa71-089a-4322-91af-479509c6e35d" />
+
 
 ## Auteur
 
