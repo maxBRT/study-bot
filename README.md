@@ -70,7 +70,7 @@ npm run dev
 
 ### Backend (`backend/.env`)
 
-Voir les instructions dans le fichier (README)[https://github.com/maxBRT/study-bot/tree/main/backend] du dossier `backend`.
+Voir les instructions dans le fichier [README](https://github.com/maxBRT/study-bot/tree/main/backend) du dossier `backend`.
 
 ## Captures d'écran
 
