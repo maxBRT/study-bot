@@ -35,9 +35,8 @@ docker compose up --build
 
 - [Bun](https://bun.sh/) installé
 - [Node.js](https://nodejs.org/) installé (pour le backend)
-- PostgreSQL en cours d'exécution
-> Note : NEON à été retirer du project pour prioriser la contenerisation. Plus de detail dans le rapport technique.
 - Clés API OpenAI
+- URL Neon
 
 ### Installation locale
 

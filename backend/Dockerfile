@@ -8,4 +8,6 @@ RUN npm install && npm install -g tsx
 
 COPY . .
 
-CMD ["tsx", "src/app.ts"]
+RUN npx prisma generate
+
+CMD ["sh", "-c", "npx prisma migrate deploy && tsx src/app.ts"]

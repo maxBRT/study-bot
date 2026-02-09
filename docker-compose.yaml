@@ -26,6 +26,7 @@ services:
           condition: service_healthy
       environment:
         DATABASE_URL: "postgresql://postgres:postgres@db:5432/study-db"
+        DB_TYPE: "PG"
       ports:
         - "3000:3000"
       healthcheck:
