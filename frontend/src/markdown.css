@@ -2,12 +2,13 @@
     line-height: 1.625;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     max-width: 100%;
+    color: var(--foreground);
 }
 
 .markdown-container h1,
 .markdown-container h2,
 .markdown-container h3 {
-    color: #111827;
+    color: var(--foreground);
     font-weight: 700;
     margin-top: 2rem;
     margin-bottom: 1rem;
@@ -16,7 +17,7 @@
 
 .markdown-container h1 {
     font-size: 2.25rem;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--border);
     padding-bottom: 0.5rem;
 }
 
@@ -33,7 +34,7 @@
 }
 
 .markdown-container strong {
-    color: #111827;
+    color: var(--foreground);
     font-weight: 600;
 }
 
@@ -58,19 +59,20 @@
 .markdown-container code {
     font-family: "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
     font-size: 0.875em;
-    background-color: #f3f4f6;
+    background-color: var(--muted);
     padding: 0.2rem 0.4rem;
     border-radius: 4px;
-    color: #eb5757;
+    color: var(--destructive);
 }
 
 .markdown-container pre {
-    background-color: #1f2937;
-    color: #f9fafb;
+    background-color: var(--card);
+    color: var(--card-foreground);
     padding: 1rem;
     border-radius: 8px;
     overflow-x: auto;
     margin-bottom: 1.25rem;
+    border: 1px solid var(--border);
 }
 
 .markdown-container pre code {
@@ -81,10 +83,10 @@
 }
 
 .markdown-container blockquote {
-    border-left: 4px solid #e5e7eb;
+    border-left: 4px solid var(--border);
     padding-left: 1rem;
     font-style: italic;
-    color: #6b7280;
+    color: var(--muted-foreground);
     margin: 1.5rem 0;
 }
 
@@ -95,14 +97,18 @@
 }
 
 .markdown-container th {
-    background-color: #f9fafb;
+    background-color: var(--muted);
     text-align: left;
     font-weight: 600;
     padding: 0.75rem;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--border);
 }
 
 .markdown-container td {
     padding: 0.75rem;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--border);
+}
+
+.markdown-container strong {
+    color: var(--foreground);
 }

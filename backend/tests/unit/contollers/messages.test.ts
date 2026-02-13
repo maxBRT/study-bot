@@ -81,7 +81,7 @@ describe("Messages controller", () => {
 
             await sendMessage(req, res);
 
-            expect(res.statusCode).toBe(500);
+            expect(res.statusCode).toBe(404);
         });
     });
 });

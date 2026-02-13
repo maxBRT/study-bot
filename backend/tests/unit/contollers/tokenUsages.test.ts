@@ -33,7 +33,7 @@ describe("Token usages controller", () => {
 
             expect(res.statusCode).toBe(200);
             expect(res.body.success).toBe(true);
-            expect(res.body.tokenUsages).toHaveLength(2);
+            expect(res.body.data).toHaveLength(2);
         });
         it("should return an empty array if no token usages found", async () => {
             const { user } = await createTestUser();
@@ -45,7 +45,7 @@ describe("Token usages controller", () => {
 
             expect(res.statusCode).toBe(200);
             expect(res.body.success).toBe(true);
-            expect(res.body.tokenUsages).toHaveLength(0);
+            expect(res.body.data).toHaveLength(0);
         });
     });
     describe("getTokenUsage", () => {
@@ -69,7 +69,7 @@ describe("Token usages controller", () => {
             await getTokenUsage(req, res);
 
             expect(res.statusCode).toBe(200);
-            expect(res.body.tokenUsage.id).toBe(tokenUsage.id);
+            expect(res.body.data.id).toBe(tokenUsage.id);
         });
 
         it("should return 404 when token usage not found", async () => {

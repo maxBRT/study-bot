@@ -43,7 +43,7 @@ describe("Auth middleware", () => {
             await authMiddleware(req, res, next);
 
             expect(res.statusCode).toBe(401);
-            expect(res.body).toEqual({ error: "Unauthorized" });
+            expect(res.body).toEqual({ success: false, message: "Unauthorized", data: null });
             expect(next).not.toHaveBeenCalled();
         });
 

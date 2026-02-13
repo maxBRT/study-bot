@@ -12,22 +12,22 @@ import { ThemeProvider } from "./components/theme-provider";
 export function App() {
     return (
         <ThemeProvider>
-        <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Routes>
+                {/* Public routes */}
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
 
-            {/* Protected routes with shared sidebar layout */}
-            <Route element={<ProtectedRoute />}>
-                <Route element={<DashboardLayout />}>
-                    <Route path="/dashboard/:id?" element={<Dashboard />} />
-                    <Route path="/profile" element={<Profile />} />
+                {/* Protected routes with shared sidebar layout */}
+                <Route element={<ProtectedRoute />}>
+                    <Route element={<DashboardLayout />}>
+                        <Route path="/dashboard/:id?" element={<Dashboard />} />
+                        <Route path="/profile" element={<Profile />} />
+                    </Route>
                 </Route>
-            </Route>
 
-            <Route path="*" element={<NotFound />} />
-        </Routes>
+                <Route path="*" element={<NotFound />} />
+            </Routes>
         </ThemeProvider>
     );
 }

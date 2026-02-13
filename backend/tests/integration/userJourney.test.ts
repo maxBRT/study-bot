@@ -32,8 +32,8 @@ describe("Top to bottom", () => {
         await createChat(req, res);
         expect(res.statusCode).toBe(201);
         expect(res.body.success).toBe(true);
-        expect(res.body.chat.title).toBe('Test Chat');
-        const chatId = res.body.chat.id;
+        expect(res.body.data.title).toBe('Test Chat');
+        const chatId = res.body.data.id;
 
         // Send a message to the chat
         const req2 = await createMockAuthRequest(user, {
@@ -53,11 +53,11 @@ describe("Top to bottom", () => {
         expect(res.statusCode).toBe(200);
         expect(res.body.success).toBe(true);
         // Should have 2 token usages: one for input tokens, one for output tokens
-        expect(res.body.tokenUsages).toHaveLength(2);
+        expect(res.body.data).toHaveLength(2);
 
         // Calculate total tokens spent across all usages
         let tokenSpent = 0;
-        for (const tokenUsage of res.body.tokenUsages) {
+        for (const tokenUsage of res.body.data) {
             tokenSpent += parseInt(tokenUsage.tokenIn);
             tokenSpent += parseInt(tokenUsage.tokenOut);
         };
@@ -81,7 +81,7 @@ describe("Top to bottom", () => {
         const res = createMockResponse();
         await createChat(createChatReq, res);
         expect(res.statusCode).toBe(201);
-        const chatId = res.body.chat.id;
+        const chatId = res.body.data.id;
 
         // Send first message
         const msg1Req = await createMockAuthRequest(user, {
@@ -97,7 +97,7 @@ describe("Top to bottom", () => {
         // Check token usage after first message to establish baseline
         const tokenReq1 = await createMockAuthRequest(user);
         await listTokenUsages(tokenReq1, res);
-        const tokensAfterMsg1 = res.body.tokenUsages;
+        const tokensAfterMsg1 = res.body.data;
         // At least 2 usages: one for user input, one for agent response
         expect(tokensAfterMsg1.length).toBeGreaterThanOrEqual(2);
 
@@ -126,7 +126,7 @@ describe("Top to bottom", () => {
         // Verify token usages have accumulated across all messages
         const tokenReq2 = await createMockAuthRequest(user);
         await listTokenUsages(tokenReq2, res);
-        const tokensAfterMsg3 = res.body.tokenUsages;
+        const tokensAfterMsg3 = res.body.data;
         // Should have more token usages than after the first message
         expect(tokensAfterMsg3.length).toBeGreaterThan(tokensAfterMsg1.length);
 
@@ -151,7 +151,7 @@ describe("Top to bottom", () => {
         await getChat(getChatReq, res);
         expect(res.statusCode).toBe(200);
         // Should have 6 total messages: 3 from user + 3 from agent
-        expect(res.body.data.chat.messages.length).toBe(6);
+        expect(res.body.data.messages.length).toBe(6);
     });
     it("should handle token depletion correctly", async () => {
         // Create a test user with default token balance (1000)
@@ -164,7 +164,7 @@ describe("Top to bottom", () => {
         });
         await createChat(createChatReq, res);
         expect(res.statusCode).toBe(201);
-        const chatId = res.body.chat.id;
+        const chatId = res.body.data.id;
 
         // Manually set user's tokens to a very low amount to simulate near-depletion
         const updatedUser = await prisma.user.update({

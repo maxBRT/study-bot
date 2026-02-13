@@ -33,7 +33,7 @@ describe("Chats controller", () => {
             expect(res.body).toMatchObject({
                 success: true,
                 message: 'Chat created successfully',
-                chat: {
+                data: {
                     title: 'My Test Chat',
                     userId: user.id,
                 }
@@ -77,7 +77,7 @@ describe("Chats controller", () => {
 
             expect(res.statusCode).toBe(200);
             expect(res.body.success).toBe(true);
-            expect(res.body.chats).toHaveLength(2);
+            expect(res.body.data).toHaveLength(2);
         });
     });
 
@@ -101,7 +101,7 @@ describe("Chats controller", () => {
             await getChat(req, res);
 
             expect(res.statusCode).toBe(200);
-            expect(res.body.data.chat.title).toBe('Specific Chat');
+            expect(res.body.data.title).toBe('Specific Chat');
         });
 
         it("should return 404 when chat not found", async () => {

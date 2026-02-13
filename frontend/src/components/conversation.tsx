@@ -111,7 +111,6 @@ export function Conversation({ messages, addMessage, updateLastMessage, chatId, 
                                 <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
                                 <SelectItem value="gpt-4">GPT-4</SelectItem>
                                 <SelectItem value="gpt-5.2">GPT-5</SelectItem>
-                                <SelectItem value="gpt-5-nano">GPT-5 nano</SelectItem>
                             </SelectGroup>
                         </SelectContent>
                     </Select>

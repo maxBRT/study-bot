@@ -3,7 +3,6 @@ import type { ApiResponse } from "@/types/api";
 import type { Chat } from "@/types/models/chat";
 import type { Message } from "@/types/models/message";
 import React, { useEffect } from "react";
-import { fi } from "zod/locales";
 
 type ChatState = {
     chat: Chat | null;

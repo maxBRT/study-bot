@@ -112,7 +112,7 @@ model TokenUsage {
     userId    String
     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     messageId String?
-    message   Message? @relation(fields: [messageId], references: [id], onDelete: SetNull)
+    message   Message? @relation(fields: [messageId], references: [id], onDelete: Cascade)
     tokenIn   BigInt?
     tokenOut  BigInt?
     createdAt DateTime @default(now())

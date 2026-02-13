@@ -26,7 +26,7 @@ const navItems = [
 
 
 
-export function AppSidebar({ chats, setChats, ...props }: React.ComponentProps<typeof Sidebar> & { chats: Chat[] } & { setChats: (chats: Chat[]) => void }) {
+export function AppSidebar({ chats, setChats }: React.ComponentProps<typeof Sidebar> & { chats: Chat[] } & { setChats: (chats: Chat[]) => void }) {
     const navigate = useNavigate();
 
     const deleteChat = async (chatId: string) => {
@@ -48,7 +48,7 @@ export function AppSidebar({ chats, setChats, ...props }: React.ComponentProps<t
     }
 
     return (
-        <Sidebar {...props}>
+        <Sidebar>
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>

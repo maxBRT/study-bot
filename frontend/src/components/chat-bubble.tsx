@@ -19,8 +19,7 @@ export function ChatBubble({ role, content }: ChatBubbleProps) {
             </Avatar>
 
             <div className={cn(
-                "max-w-[80%] rounded-lg px-4 py-2 text-sm shadow-sm markdown-container",
-                isUser ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+                "max-w-[80%] rounded-lg px-4 py-2 text-sm shadow-sm markdown-container bg-muted text-foreground"
             )}>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
             </div>
