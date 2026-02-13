@@ -21,6 +21,42 @@ Study Bot est un compagnon d'étude propulsé par l'IA. L'application permet aux
 
 ## Instructions d'installation
 
+### Prérequis
+
+Avant de commencer, configurez les variables d'environnement dans les fichiers `.env` des dossiers `frontend/` et `backend/`.
+
+#### Frontend (`frontend/.env`)
+
+| Variable | Description |
+|---|---|
+| `API_URL` | URL du backend (défaut : `http://localhost:3000`) |
+
+#### Backend (`backend/.env`)
+
+Copier les variables d'environnement fournies dans le fichier `.env` à la racine du dossier `backend`.
+
+**Variables requises :**
+
+| Variable | Description |
+|---|---|
+| `DB_TYPE` | Type de base de données (`PG` pour local, `NEON` pour Neon) |
+| `DATABASE_URL` | URL de connexion PostgreSQL |
+| `TEST_DATABASE_URL` | URL de connexion pour les tests |
+| `BETTER_AUTH_SECRET` | Clé secrète pour Better Auth |
+| `BETTER_AUTH_URL` | URL de l'application (ex: `http://localhost:3000`) |
+| `OPENAI_API_KEY` | Clé API OpenAI |
+| `FRONTEND_URL` | URL du frontend (ex: `http://localhost:4321`) |
+| `PORT` | Port du serveur backend (défaut : `3000`) |
+| `GITHUB_CLIENT_ID` | ID client OAuth GitHub |
+| `GITHUB_CLIENT_SECRET` | Secret client OAuth GitHub |
+| `RESEND_API_KEY` | Clé API Resend pour l'envoi d'emails |
+| `RESEND_EMAIL` | Adresse email d'envoi |
+| `VERIFY_EMAIL` | Activer la vérification des emails (`true`/`false`) |
+
+> **Note :** [Resend](https://resend.com/docs/dashboard/emails/introduction) permet uniquement d'envoyer des emails à l'adresse liée au compte. La vérification des emails est désactivée par défaut.
+
+---
+
 ### Installation avec Docker (Recommendé)
 
 ```bash
@@ -31,45 +67,36 @@ docker compose up --build
 
 ### Installation locale
 
-#### Prérequis
+#### Prérequis supplémentaires
 
 - [Bun](https://bun.sh/) installé
 - [Node.js](https://nodejs.org/) installé (pour le backend)
-- Clés API OpenAI
-- URL Neon
 
-### Installation locale
+#### Frontend
 
 ```bash
-# Cloner le projet
-git clone https://github.com/maxBRT/study-bot.git
-cd study-bot-project
-
-# --- Frontend ---
 cd frontend
 bun install
 bun run dev
 # Accessible à http://localhost:4321
-
-# --- Backend (dans un autre terminal) ---
-cd backend
-npm install
-npx prisma generate
-npm run dev
-# Accessible à http://localhost:3000
 ```
 
-## Variables d'environnement
+#### Backend
 
-### Frontend (`frontend/.env`)
+```bash
+cd backend
 
-| Variable | Description |
-|---|---|
-| `API_URL` | URL du backend (défaut : `http://localhost:3000`) |
+# 1. Installer les dépendances
+npm install
 
-### Backend (`backend/.env`)
+# 2. Générer le client Prisma
+npx prisma generate
 
-Voir les instructions dans le fichier [README](https://github.com/maxBRT/study-bot/tree/main/backend) du dossier `backend`.
+# 3. Lancer le serveur
+npm run dev
+# Accessible à http://localhost:3000
+# Documentation API : http://localhost:3000/docs
+```
 
 ## Captures d'écran
 
