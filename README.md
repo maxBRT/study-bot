@@ -94,6 +94,8 @@ Voir les instructions dans le fichier [README](https://github.com/maxBRT/study-b
 - Assister à la résolution de problèmes techniques.
 - Corriger les fautes d'orthographe dans la documentation.
 
+> Le fichier CLAUDE.md est créer par défault lors de bun init. 
+
 ## Auteur
 
 Maxime Bourret
