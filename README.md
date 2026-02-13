@@ -87,6 +87,12 @@ Voir les instructions dans le fichier [README](https://github.com/maxBRT/study-b
 
 <img width="1905" height="916" alt="image" src="https://github.com/user-attachments/assets/8535aa71-089a-4322-91af-479509c6e35d" />
 
+## L'intelligence artificielle a été utilisée dans ce projet pour :
+- Déboguer le code.
+- Conseils sur les meilleures pratiques.
+- Proposer des suggestions de refactorisation.
+- Assister à la résolution de problèmes techniques.
+- Corriger les fautes d'orthographe dans la documentation.
 
 ## Auteur
 
